@@ -19,7 +19,6 @@ public class GoogleAuthResponseParser {
     @Autowired
     GoogleAuthorizationCodeExchange exchange;
 
-    //authorization code in request body in JSON object {'authCode':'the Code'}
     protected String exchange(Map<String, Object> authorizationCode) {
         ResponseEntity<Map> googleResponse = null;
 
@@ -37,19 +36,10 @@ public class GoogleAuthResponseParser {
 
 
             String jwtToken = (String) googleResponse.getBody().get("id_token");
-            LOG.debug("------------ Decode JWT ------------");
             String[] splitString = jwtToken.split("\\.");
-//			String base64EncodedHeader = splitString[0];
             String base64EncodedBody = splitString[1];
-//			String base64EncodedSignature = splitString[2];
-//			
-//			LOG.debug("~~~~~~~~~ JWT Header ~~~~~~~");
             Base64 base64Url = new Base64(true);
-//			String header = new String(base64Url.decode(base64EncodedHeader));
-//			LOG.debug("JWT Header : " + header);
 
-
-            LOG.debug("~~~~~~~~~ JWT Body ~~~~~~~");
             String body = new String(base64Url.decode(base64EncodedBody));
             LOG.debug("JWT Body : {}", body);
             String newBody = body.replaceAll("\"", "");
@@ -65,10 +55,6 @@ public class GoogleAuthResponseParser {
             LOG.debug("response:  {}", responseToFrontend);
             return responseToFrontend.toString();
 
-
-//			LOG.debug("~~~~~ JWT Signature ~~~~~~");
-//			String signature = new String(base64Url.decode(base64EncodedSignature));
-//			LOG.debug("JWT Signature : "+signature);
         }
 
 
