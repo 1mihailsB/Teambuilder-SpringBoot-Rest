@@ -27,7 +27,7 @@ public class GoogleAuthorizationCodeExchange {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        HttpEntity<String> entity = new HttpEntity<String>("code=" + authorizationCode.get("authCode")
+        HttpEntity<String> entity = new HttpEntity<>("code=" + authorizationCode.get("authCode")
                 + "&client_id=" + clientId
                 + "&client_secret=" + clientSecret
                 + "&redirect_uri=" + redirectUri
