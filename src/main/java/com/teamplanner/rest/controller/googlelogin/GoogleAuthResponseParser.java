@@ -30,10 +30,10 @@ public class GoogleAuthResponseParser {
         if (googleResponse != null) {
             JSONObject json = new JSONObject(googleResponse);
 
-            LOG.debug("gresponse" + googleResponse.getHeaders());
-            LOG.debug("id_token++   " + googleResponse.getBody().get("id_token"));
-            LOG.debug("gresponse++" + json.toString(4));
-            LOG.debug("JSON--------- \n" + json.get("body"));
+            LOG.debug("gresponse {}", googleResponse.getHeaders());
+            LOG.debug("id_token++   {}", googleResponse.getBody().get("id_token"));
+            LOG.debug("gresponse++  {}", json.toString(4));
+            LOG.debug("JSON--------- \n {}", json.get("body"));
 
 
             String jwtToken = (String) googleResponse.getBody().get("id_token");
@@ -51,7 +51,7 @@ public class GoogleAuthResponseParser {
 
             LOG.debug("~~~~~~~~~ JWT Body ~~~~~~~");
             String body = new String(base64Url.decode(base64EncodedBody));
-            LOG.debug("JWT Body : " + body);
+            LOG.debug("JWT Body : {}", body);
             String newBody = body.replaceAll("\"", "");
             String[] bodyEntries = newBody.split(",");
             Map<String, String> userDetails =
@@ -62,7 +62,7 @@ public class GoogleAuthResponseParser {
             LOG.debug(userDetails.toString());
 
             responseToFrontend = new JSONObject(userDetails);
-            LOG.debug("response:  " + responseToFrontend);
+            LOG.debug("response:  {}", responseToFrontend);
             return responseToFrontend.toString();
 
 
