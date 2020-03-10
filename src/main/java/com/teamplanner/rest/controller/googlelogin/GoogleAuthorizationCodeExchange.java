@@ -13,11 +13,11 @@ import java.util.Map;
 public class GoogleAuthorizationCodeExchange {
 
     @Value("${google.client.id}")
-    private String CLIENT_ID;
+    private String clientId;
     @Value("${google.client.secret}")
-    private String CLIENT_SECRET;
+    private String clientSecret;
     @Value("${google.redirect.uri}")
-    private String REDIRECT_URI;
+    private String redirectUri;
     @Autowired
     RestTemplate restTemplate;
 
@@ -28,9 +28,9 @@ public class GoogleAuthorizationCodeExchange {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         HttpEntity<String> entity = new HttpEntity<String>("code=" + authorizationCode.get("authCode")
-                + "&client_id=" + CLIENT_ID
-                + "&client_secret=" + CLIENT_SECRET
-                + "&redirect_uri=" + REDIRECT_URI
+                + "&client_id=" + clientId
+                + "&client_secret=" + clientSecret
+                + "&redirect_uri=" + redirectUri
                 + "&grant_type=authorization_code", headers);
 
         try {
