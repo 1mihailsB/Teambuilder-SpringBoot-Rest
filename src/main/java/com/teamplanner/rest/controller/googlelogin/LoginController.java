@@ -19,7 +19,7 @@ public class LoginController {
         this.gace = garp;
     }
 
-    @PostMapping("/authCode") //authorization code in request body in JSON object {'authCode':'the Code'}
+    @PostMapping("/authCode")
     public String googleAuthentication(@RequestBody Map<String, Object> authorizationCode) {
         try {
             return gace.exchange(authorizationCode);
