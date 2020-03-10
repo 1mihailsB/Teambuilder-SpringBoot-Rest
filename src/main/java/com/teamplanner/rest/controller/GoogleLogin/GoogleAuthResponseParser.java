@@ -20,7 +20,7 @@ public class GoogleAuthResponseParser {
 	GoogleAuthorizationCodeExchange exchange;
 	
 				//authorization code in request body in JSON object {'authCode':'the Code'}
-	protected String exchange(Map<String, Object> authorizationCode)throws HttpClientErrorException {
+	protected String exchange(Map<String, Object> authorizationCode) {
 		ResponseEntity<Map> googleResponse = null;
 		
 		googleResponse = exchange.exchangeAuthCode(authorizationCode);
