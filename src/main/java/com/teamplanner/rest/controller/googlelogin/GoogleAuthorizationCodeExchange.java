@@ -1,4 +1,4 @@
-package com.teamplanner.rest.controller.googlelogin;
+package com.teamplanner.rest.controller.GoogleLogin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

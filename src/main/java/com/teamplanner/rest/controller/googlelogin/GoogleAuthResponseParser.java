@@ -1,4 +1,4 @@
-package com.teamplanner.rest.controller.googlelogin;
+package com.teamplanner.rest.controller.GoogleLogin;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
