@@ -1,5 +1,7 @@
 package com.teamplanner.rest.controller.googlelogin;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -7,10 +9,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 
 @Component
 public class GoogleAuthorizationCodeExchange {
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Value("${google.client.id}")
     private String clientId;
@@ -18,8 +22,13 @@ public class GoogleAuthorizationCodeExchange {
     private String clientSecret;
     @Value("${google.redirect.uri}")
     private String redirectUri;
+
+    private final RestTemplate restTemplate;
+
     @Autowired
-    RestTemplate restTemplate;
+    public GoogleAuthorizationCodeExchange(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public ResponseEntity<Map> exchangeAuthCode(Map<String, Object> authorizationCode) {
 
@@ -37,8 +46,7 @@ public class GoogleAuthorizationCodeExchange {
             googleResponse = restTemplate.exchange("https://oauth2.googleapis.com/token", HttpMethod.POST, entity, Map.class);
 
         } catch (HttpClientErrorException e) {
-
-            throw e;
+            LOG.error("an error ocured while exchanging auth code", e);
         }
 
         return googleResponse;
