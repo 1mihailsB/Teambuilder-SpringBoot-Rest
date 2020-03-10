@@ -1,4 +1,4 @@
-package com.teamplanner.rest.controller.GoogleLogin;
+package com.teamplanner.rest.controller.googlelogin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
