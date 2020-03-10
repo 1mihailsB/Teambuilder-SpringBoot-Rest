@@ -1,26 +1,21 @@
 package com.teamplanner.rest.controller.GoogleLogin;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 @Component
 public class GoogleAuthResponseParser {
-
+	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	@Autowired
 	GoogleAuthorizationCodeExchange exchange;
 	
@@ -35,28 +30,28 @@ public class GoogleAuthResponseParser {
 		if(googleResponse!=null) {
 			JSONObject json = new JSONObject(googleResponse);
 			
-			System.out.println("gresponse"+googleResponse.getHeaders());
-			System.out.println("id_token++   "+googleResponse.getBody().get("id_token"));
-			System.out.println("gresponse++"+json.toString(4));
-			System.out.println("JSON--------- \n"+json.get("body"));
+			LOG.debug("gresponse"+googleResponse.getHeaders());
+			LOG.debug("id_token++   "+googleResponse.getBody().get("id_token"));
+			LOG.debug("gresponse++"+json.toString(4));
+			LOG.debug("JSON--------- \n"+json.get("body"));
 			
 			
 			String jwtToken = (String)googleResponse.getBody().get("id_token");
-			System.out.println("------------ Decode JWT ------------");
+			LOG.debug("------------ Decode JWT ------------");
 			String[] split_string = jwtToken.split("\\.");
 //			String base64EncodedHeader = split_string[0];
 			String base64EncodedBody = split_string[1];
 //			String base64EncodedSignature = split_string[2];
 //			
-//			System.out.println("~~~~~~~~~ JWT Header ~~~~~~~");
+//			LOG.debug("~~~~~~~~~ JWT Header ~~~~~~~");
 			Base64 base64Url = new Base64(true);
 //			String header = new String(base64Url.decode(base64EncodedHeader));
-//			System.out.println("JWT Header : " + header);
+//			LOG.debug("JWT Header : " + header);
 			
 			
-			System.out.println("~~~~~~~~~ JWT Body ~~~~~~~");
+			LOG.debug("~~~~~~~~~ JWT Body ~~~~~~~");
 			String body = new String(base64Url.decode(base64EncodedBody));
-			System.out.println("JWT Body : "+body);      
+			LOG.debug("JWT Body : "+body);      
 			String newBody = body.replaceAll("\"","");
 			String[] bodyEntries = newBody.split(",");
 			Map<String, String> userDetails = 
@@ -64,16 +59,16 @@ public class GoogleAuthResponseParser {
 					.map(elem -> elem.split(":"))
 					.filter(elem -> elem[0].equals("given_name"))
 					.collect(Collectors.toMap(e -> e[0], e -> e[1]));
-			System.out.println(userDetails);
+			LOG.debug(userDetails.toString());
 			
 			responseToFrontend = new JSONObject(userDetails);
-			System.out.println("response:  "+responseToFrontend);
+			LOG.debug("response:  "+responseToFrontend);
 			return responseToFrontend.toString();
 			
 			
-//			System.out.println("~~~~~ JWT Signature ~~~~~~");
+//			LOG.debug("~~~~~ JWT Signature ~~~~~~");
 //			String signature = new String(base64Url.decode(base64EncodedSignature));
-//			System.out.println("JWT Signature : "+signature);
+//			LOG.debug("JWT Signature : "+signature);
 		}
 		
 		
