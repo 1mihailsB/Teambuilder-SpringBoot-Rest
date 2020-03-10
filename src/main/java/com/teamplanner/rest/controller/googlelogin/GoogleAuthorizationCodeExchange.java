@@ -21,7 +21,7 @@ public class GoogleAuthorizationCodeExchange {
     @Autowired
     RestTemplate restTemplate;
 
-    public ResponseEntity<Map> exchangeAuthCode(Map<String, Object> authorizationCode) throws HttpClientErrorException {
+    public ResponseEntity<Map> exchangeAuthCode(Map<String, Object> authorizationCode) {
 
         ResponseEntity<Map> googleResponse = null;
         HttpHeaders headers = new HttpHeaders();
