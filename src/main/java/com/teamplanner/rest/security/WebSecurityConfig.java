@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	        return source;
 	    }
 	
-	OAuth2AuthorizationCodeAuthenticationProvider c;
+//	OAuth2AuthorizationCodeAuthenticationProvider c;
 
  	@Override
  	protected void configure(AuthenticationManagerBuilder auth) throws Exception {

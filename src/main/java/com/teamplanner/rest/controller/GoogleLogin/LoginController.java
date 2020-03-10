@@ -26,17 +26,17 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/oauth")
 public class LoginController {
 	
-	GoogleAuthResponseParser gace;
+	GoogleAuthResponseParser garp;
 	
 	@Autowired
 	public LoginController(GoogleAuthResponseParser garp) {
-		this.gace = garp;
+		this.garp = garp;
 	}
 	
 	@PostMapping("/authCode") //authorization code in request body in JSON object {'authCode':'the Code'}
 	public String googleAuthentication(@RequestBody Map<String, Object> authorizationCode) {
 		try {
-			return gace.exchange(authorizationCode);
+			return garp.exchange(authorizationCode);
 		}catch (HttpClientErrorException e) {
 			throw new ResponseStatusException(e.getStatusCode(), e.getStatusText());
 		}
