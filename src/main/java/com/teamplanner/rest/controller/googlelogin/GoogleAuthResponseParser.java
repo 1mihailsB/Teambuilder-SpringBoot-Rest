@@ -31,7 +31,10 @@ public class GoogleAuthResponseParser {
 
             LOG.debug("gresponse {}", googleResponse.getHeaders());
             LOG.debug("id_token++   {}", googleResponse.getBody().get("id_token"));
-            LOG.debug("gresponse++  {}", json.toString(4));
+            //To avoid evaluating the to string method even when the loglevel is higher than debug we need to check if debug loging is enable for performance reasons
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("gresponse++  {}", json.toString(4));
+            }
             LOG.debug("JSON--------- \n {}", json.get("body"));
 
 
@@ -49,7 +52,7 @@ public class GoogleAuthResponseParser {
                             .map(elem -> elem.split(":"))
                             .filter(elem -> elem[0].equals("given_name"))
                             .collect(Collectors.toMap(e -> e[0], e -> e[1]));
-            LOG.debug(userDetails.toString());
+            LOG.debug("user details: {}", userDetails);
 
             responseToFrontend = new JSONObject(userDetails);
             LOG.debug("response:  {}", responseToFrontend);
