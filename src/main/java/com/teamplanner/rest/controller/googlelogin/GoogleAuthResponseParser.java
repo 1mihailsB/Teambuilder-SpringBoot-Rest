@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import com.teamplanner.rest.dao.UserRepository;
 import com.teamplanner.rest.model.User;
 import com.teamplanner.rest.service.UserService;
 
@@ -63,7 +64,6 @@ public class GoogleAuthResponseParser {
         String newBody = body.replaceAll("\"", "");
         String[] bodyEntries = newBody.split(",");
         List<String> userProperties = Arrays.asList("sub","given_name", "email");
-        LOG.debug("user properties: {}", userProperties.toString());
         
         Map<String, String> userprops =
                 Arrays.stream(bodyEntries)
@@ -71,6 +71,16 @@ public class GoogleAuthResponseParser {
                         .filter(elem -> userProperties.contains(elem[0]))
                         .collect(Collectors.toMap(e -> e[0], e -> e[1]));
         LOG.debug("user props: {}", userprops);
+        
+        User user = userService.findById(userprops.get("sub"));
+        LOG.debug("google user: "+user);
+        if(user == null) {
+        	User newUser = new User(userprops.get("sub"), userprops.get("given_name"), userprops.get("email"));
+        	LOG.debug("new user: "+newUser);
+        	userService.save(newUser);
+        }else {
+        	LOG.debug("----- User already exists in our database");
+        }
         
         
         Map<String, String> userDetails =
@@ -85,8 +95,4 @@ public class GoogleAuthResponseParser {
         return responseToFrontend.toString();
     }
     
-    private void saveUser(User user) {
-    	userService.save(user);
-    }
-
 }

@@ -29,12 +29,12 @@ public class UserServiceImpl implements UserService{
 	public User findById(String id) {
 		Optional<User> result = userRepository.findById(id);
 		
-		User user = null;
+		User user;
 		
 		if(result.isPresent()) {
 			user = result.get();
 		}else {
-			throw new RuntimeException("Didn't find the user by ID");
+			user = null;
 		}
 		return user;
 	}

@@ -7,8 +7,10 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="users")
 public class User {
 
 	@Id
@@ -27,21 +29,24 @@ public class User {
 	private int enabled = 1;
 	
 	@Column
-	private String roles = "";
+	private String roles = "ROLE_USER";
 	
 	@Column
 	private String permissions = "";
 	
-	
+	public User() {
+	}
 
-	public User(String googlesub, String name, String email, String roles,
-			String permissions) {
+	public User(String googlesub, String name, String email) {
 		
 		this.googlesub = googlesub;
 		this.name = name;
 		this.email = email;
-		this.roles = roles;
-		this.permissions = permissions;
+	}
+	
+	@Override
+	public String toString() {
+		return "User [googlesub=" + googlesub + ", name=" + name + ", email=" + email + "]";
 	}
 
 	public String getGooglesub() {
