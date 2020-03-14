@@ -16,9 +16,14 @@ import java.util.stream.Collectors;
 @Component
 public class GoogleAuthResponseParser {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    @Autowired
+    
     GoogleAuthorizationCodeExchange exchange;
 
+    @Autowired
+    public GoogleAuthResponseParser(GoogleAuthorizationCodeExchange gace) {
+    	this.exchange = gace;
+	}
+    
     protected String exchange(Map<String, Object> authorizationCode) {
         ResponseEntity<Map> googleResponse = null;
 
