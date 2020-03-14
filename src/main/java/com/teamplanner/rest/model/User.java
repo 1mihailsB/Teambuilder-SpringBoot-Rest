@@ -21,7 +21,7 @@ public class User {
 	private String email;
 	
 	@Column
-	private String nickname;
+	private String nickname = "#$%unset";
 	
 	@Column
 	private int enabled = 1;
@@ -34,13 +34,12 @@ public class User {
 	
 	
 
-	public User(String googlesub, String name, String email, String nickname, String roles,
+	public User(String googlesub, String name, String email, String roles,
 			String permissions) {
 		
 		this.googlesub = googlesub;
 		this.name = name;
 		this.email = email;
-		this.nickname = nickname;
 		this.roles = roles;
 		this.permissions = permissions;
 	}
