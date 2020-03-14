@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.teamplanner.rest.dao.UserRepository;
 import com.teamplanner.rest.model.User;
 import com.teamplanner.rest.service.UserService;
 
@@ -33,7 +32,8 @@ public class GoogleAuthResponseParser {
 	}
     
     protected String exchange(Map<String, Object> authorizationCode) {
-        ResponseEntity<Map> googleResponse = null;
+        @SuppressWarnings("rawtypes")
+		ResponseEntity<Map> googleResponse = null;
 
         googleResponse = exchange.exchangeAuthCode(authorizationCode);
 
@@ -44,7 +44,8 @@ public class GoogleAuthResponseParser {
     }
 
     
-    private String parseGoogleReseponse(ResponseEntity<Map> googleResponse) {
+    @SuppressWarnings("rawtypes")
+	private String parseGoogleReseponse(ResponseEntity<Map> googleResponse) {
     	JSONObject json = new JSONObject(googleResponse);
 
         //To avoid evaluating the to string method even when the loglevel is higher than debug we need to check if debug loging is enable for performance reasons
@@ -79,7 +80,8 @@ public class GoogleAuthResponseParser {
         	LOG.debug("new user: "+newUser);
         	userService.save(newUser);
         }else {
-        	LOG.debug("----- User already exists in our database");
+        	LOG.debug("----- User already exists in our database: "+user);
+        	
         }
         
         

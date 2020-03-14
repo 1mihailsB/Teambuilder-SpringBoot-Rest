@@ -30,7 +30,8 @@ public class GoogleAuthorizationCodeExchange {
         this.restTemplate = restTemplate;
     }
 
-    public ResponseEntity<Map> exchangeAuthCode(Map<String, Object> authorizationCode) {
+    @SuppressWarnings("rawtypes")
+	public ResponseEntity<Map> exchangeAuthCode(Map<String, Object> authorizationCode) {
 
         ResponseEntity<Map> googleResponse = null;
         HttpHeaders headers = new HttpHeaders();
