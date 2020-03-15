@@ -1,6 +1,7 @@
 package com.teamplanner.rest.controller.googlelogin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,7 +21,8 @@ public class LoginController {
     }
 
     @PostMapping("/authCode")
-    public String googleAuthentication(@RequestBody Map<String, Object> authorizationCode) {
+    @SuppressWarnings("rawtypes")
+    public ResponseEntity<Map> googleAuthentication(@RequestBody Map<String, Object> authorizationCode) {
         try {
             return garp.exchange(authorizationCode);
         } catch (HttpClientErrorException e) {

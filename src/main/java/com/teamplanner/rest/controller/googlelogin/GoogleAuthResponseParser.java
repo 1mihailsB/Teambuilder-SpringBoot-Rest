@@ -31,7 +31,7 @@ public class GoogleAuthResponseParser {
     	this.userService = userService;
 	}
     
-    protected String exchange(Map<String, Object> authorizationCode) {
+    protected ResponseEntity<Map> exchange(Map<String, Object> authorizationCode) {
         @SuppressWarnings("rawtypes")
 		ResponseEntity<Map> googleResponse = null;
 
@@ -45,56 +45,52 @@ public class GoogleAuthResponseParser {
 
     
     @SuppressWarnings("rawtypes")
-	private String parseGoogleReseponse(ResponseEntity<Map> googleResponse) {
+	private ResponseEntity<Map> parseGoogleReseponse(ResponseEntity<Map> googleResponse) {
+    	
     	JSONObject json = new JSONObject(googleResponse);
-
         //To avoid evaluating the to string method even when the loglevel is higher than debug we need to check if debug loging is enable for performance reasons
         if (LOG.isDebugEnabled()) {
             LOG.debug("googleresponse:  {}", json.toString(4));
         }
-        LOG.debug("BODY--------- \n {}", json.get("body"));
-
 
         String jwtToken = (String) googleResponse.getBody().get("id_token");
-        String[] splitString = jwtToken.split("\\.");
-        String base64EncodedBody = splitString[1];
-        Base64 base64Url = new Base64(true);
-
-        String body = new String(base64Url.decode(base64EncodedBody));
-        LOG.debug("JWT Body : {}", body);
-        String newBody = body.replaceAll("\"", "");
-        String[] bodyEntries = newBody.split(",");
-        List<String> userProperties = Arrays.asList("sub","given_name", "email");
+        String[] splitToken = jwtToken.split("\\.");
+        String base64EncodedBody = splitToken[1];
         
+        Base64 base64UrlSafe = new Base64(true);
+        String body = new String(base64UrlSafe.decode(base64EncodedBody));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("JWT Body : {}", new JSONObject(body).toString(4));
+        }
+        String bodyQuotesRemoved = body.replaceAll("\"", "");
+        String[] bodyEntries = bodyQuotesRemoved.split(",");
+        
+        List<String> selectedUserProperties = Arrays.asList("sub","given_name", "email");
         Map<String, String> userprops =
                 Arrays.stream(bodyEntries)
                         .map(elem -> elem.split(":"))
-                        .filter(elem -> userProperties.contains(elem[0]))
+                        .filter(elem -> selectedUserProperties.contains(elem[0]))
                         .collect(Collectors.toMap(e -> e[0], e -> e[1]));
-        LOG.debug("user props: {}", userprops);
-        
+
         User user = userService.findById(userprops.get("sub"));
-        LOG.debug("google user: "+user);
         if(user == null) {
         	User newUser = new User(userprops.get("sub"), userprops.get("given_name"), userprops.get("email"));
-        	LOG.debug("new user: "+newUser);
         	userService.save(newUser);
         }else {
-        	LOG.debug("----- User already exists in our database: "+user);
-        	
+        	if (LOG.isDebugEnabled()) {
+        		LOG.debug("----- User already exists in our database: "+user);
+        		}
+        }
+
+        JSONObject responseToFrontend = new JSONObject(Map.of("given_name", userprops.get("given_name")));
+        
+        ResponseEntity<Map> response = new ResponseEntity<Map>(responseToFrontend.toMap(), HttpStatus.OK);
+        
+        if(LOG.isDebugEnabled()) {
+        	LOG.debug("response to frontned: {}", new JSONObject(response).toString(4));
         }
         
-        
-        Map<String, String> userDetails =
-                Arrays.stream(bodyEntries)
-                        .map(elem -> elem.split(":"))
-                        .filter(elem -> elem[0].equals("given_name"))
-                        .collect(Collectors.toMap(e -> e[0], e -> e[1]));
-        LOG.debug("user details: {}", userDetails);
-
-        JSONObject responseToFrontend = new JSONObject(userDetails);
-        LOG.debug("response:  {}", responseToFrontend);
-        return responseToFrontend.toString();
+        return response;
     }
     
 }
