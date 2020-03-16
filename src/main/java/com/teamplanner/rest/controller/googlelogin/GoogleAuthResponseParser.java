@@ -74,15 +74,13 @@ public class GoogleAuthResponseParser {
         	User newUser = new User(userprops.get("sub"), userprops.get("given_name"), userprops.get("email"));
         	userService.save(newUser);
         }else {
-        	if (LOG.isDebugEnabled()) {
-        		LOG.debug("----- User already exists in our database: "+user);
-        		}
+        	if (LOG.isDebugEnabled()) LOG.debug("----- User already exists in our database: "+user);
         }
 
         JSONObject responseToFrontend = new JSONObject(Map.of("given_name", userprops.get("given_name")));
         
         ResponseEntity<Map> response = new ResponseEntity<Map>(responseToFrontend.toMap(), HttpStatus.OK);
-        
+
         if (LOG.isDebugEnabled()) LOG.debug("response to frontned: {}", new JSONObject(response).toString(4));
         
         return response;
