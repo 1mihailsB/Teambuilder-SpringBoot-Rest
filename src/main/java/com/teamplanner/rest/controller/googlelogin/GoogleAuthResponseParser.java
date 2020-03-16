@@ -30,9 +30,9 @@ public class GoogleAuthResponseParser {
     	this.exchange = gace;
     	this.userService = userService;
 	}
-    
+    @SuppressWarnings("rawtypes")
     protected ResponseEntity<Map> exchange(Map<String, Object> authorizationCode) {
-        @SuppressWarnings("rawtypes")
+        
 		ResponseEntity<Map> googleResponse = null;
 
         googleResponse = exchange.exchangeAuthCode(authorizationCode);
@@ -49,20 +49,17 @@ public class GoogleAuthResponseParser {
     	
     	JSONObject json = new JSONObject(googleResponse);
         //To avoid evaluating the to string method even when the loglevel is higher than debug we need to check if debug loging is enable for performance reasons
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("googleresponse:  {}", json.toString(4));
-        }
+        if (LOG.isDebugEnabled()) LOG.debug("googleresponse:  {}", json.toString(4));
 
-        String jwtToken = (String) googleResponse.getBody().get("id_token");
-        String[] splitToken = jwtToken.split("\\.");
+        String jwtIdToken = (String) googleResponse.getBody().get("id_token");
+        String[] splitToken = jwtIdToken.split("\\.");
         String base64EncodedBody = splitToken[1];
         
         Base64 base64UrlSafe = new Base64(true);
-        String body = new String(base64UrlSafe.decode(base64EncodedBody));
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("JWT Body : {}", new JSONObject(body).toString(4));
-        }
-        String bodyQuotesRemoved = body.replaceAll("\"", "");
+        String idTokenDecoded = new String(base64UrlSafe.decode(base64EncodedBody));
+        if (LOG.isDebugEnabled()) LOG.debug("JWT Body : {}", new JSONObject(idTokenDecoded).toString(4));
+        
+        String bodyQuotesRemoved = idTokenDecoded.replaceAll("\"", "");
         String[] bodyEntries = bodyQuotesRemoved.split(",");
         
         List<String> selectedUserProperties = Arrays.asList("sub","given_name", "email");
@@ -86,9 +83,7 @@ public class GoogleAuthResponseParser {
         
         ResponseEntity<Map> response = new ResponseEntity<Map>(responseToFrontend.toMap(), HttpStatus.OK);
         
-        if(LOG.isDebugEnabled()) {
-        	LOG.debug("response to frontned: {}", new JSONObject(response).toString(4));
-        }
+        if (LOG.isDebugEnabled()) LOG.debug("response to frontned: {}", new JSONObject(response).toString(4));
         
         return response;
     }
