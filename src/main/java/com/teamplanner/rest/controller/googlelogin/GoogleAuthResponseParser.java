@@ -1,5 +1,9 @@
 package com.teamplanner.rest.controller.googlelogin;
 
+import com.teamplanner.rest.model.User;
+import com.teamplanner.rest.security.jwtutils.JwtGeneratorVerifier;
+import com.teamplanner.rest.security.jwtutils.JwtProperties;
+import com.teamplanner.rest.service.UserService;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -9,19 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.teamplanner.rest.model.User;
-import com.teamplanner.rest.security.jwtutils.JwtGeneratorVerifier;
-import com.teamplanner.rest.security.jwtutils.JwtProperties;
-import com.teamplanner.rest.service.UserService;
-
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class GoogleAuthResponseParser {
@@ -90,7 +88,7 @@ public class GoogleAuthResponseParser {
 
         final Cookie cookie = new Cookie(JwtProperties.COOKIE_NAME, JwtProperties.TOKEN_PREFIX + jwt);
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(60*10);
+        cookie.setMaxAge(JwtProperties.EXPIRATION_TIME_MILLISECONDS/1000);
         cookie.setPath("/");
         httpResponse.addCookie(cookie);
 
