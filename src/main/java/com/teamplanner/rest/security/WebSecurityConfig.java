@@ -39,8 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.userRepository, this.jwtGeneratorVerifier))
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/oauth/**").permitAll()
-                .anyRequest().authenticated()
-                .and().httpBasic();
+                .anyRequest().authenticated();
     }
 
     @Override
