@@ -1,11 +1,11 @@
 package com.teamplanner.rest.security.jwtutils;
 
 import com.auth0.jwt.JWT;
-import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-import org.springframework.stereotype.Component;
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 @Component
 public class JwtGeneratorVerifier {
@@ -14,7 +14,7 @@ public class JwtGeneratorVerifier {
 		
 		String token = JWT.create()
 				.withSubject(subject)
-				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
+				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME_MILLISECONDS))
 				.sign(HMAC512(JwtProperties.SECRET.getBytes()));
 		
 		return token;
