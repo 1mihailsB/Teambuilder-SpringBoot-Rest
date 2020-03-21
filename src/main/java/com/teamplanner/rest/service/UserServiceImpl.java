@@ -1,19 +1,20 @@
 package com.teamplanner.rest.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.teamplanner.rest.dao.UserRepository;
+import com.teamplanner.rest.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.teamplanner.rest.dao.UserRepository;
-import com.teamplanner.rest.model.User;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService{
 
 	private UserRepository userRepository;
-	
+
+
+
 	@Autowired
 	public UserServiceImpl(UserRepository userRepository) {
 		this.userRepository = userRepository;
@@ -43,7 +44,4 @@ public class UserServiceImpl implements UserService{
 	public void save(User user) {
 		userRepository.save(user);
 	}
-	
-	
-
 }
