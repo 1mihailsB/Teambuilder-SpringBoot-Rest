@@ -91,7 +91,6 @@ public class GoogleAuthResponseParser {
         final Cookie cookie = new Cookie(JwtProperties.COOKIE_NAME, JwtProperties.TOKEN_PREFIX + jwt);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(60*10);
-        cookie.setSecure(false);
         cookie.setPath("/");
         httpResponse.addCookie(cookie);
 
