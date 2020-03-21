@@ -99,8 +99,6 @@ public class GoogleAuthResponseParser {
         
         if (LOG.isDebugEnabled()) LOG.debug("response to frontend: {}", new JSONObject(response).toString(4));
         
-        
-        
         return response;
     }
     
