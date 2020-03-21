@@ -49,7 +49,7 @@ public class User {
 		return "User [googlesub=" + googlesub + ", name=" + name + ", email=" + email + "]";
 	}
 
-	public String getGooglesub() {
+	public String getGoogleSub() {
 		return googlesub;
 	}
 
@@ -89,7 +89,7 @@ public class User {
 		this.enabled = enabled;
 	}
 
-	public List<String> getRoles() {
+	public List<String> getRoleList() {
 		if(this.roles.length() > 0) {
 			return Arrays.asList(this.roles.split(","));
 		}
@@ -100,7 +100,7 @@ public class User {
 		this.roles = roles;
 	}
 
-	public List<String> getPermissions() {
+	public List<String> getPermissionList() {
 		if(this.permissions.length() > 0) {
 			return Arrays.asList(this.permissions.split(","));
 		}

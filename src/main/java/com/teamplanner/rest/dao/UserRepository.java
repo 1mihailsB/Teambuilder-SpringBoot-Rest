@@ -6,4 +6,5 @@ import com.teamplanner.rest.model.User;
 
 public interface UserRepository extends JpaRepository<User, String>{
 
+    User findByGooglesub(String username);
 }
