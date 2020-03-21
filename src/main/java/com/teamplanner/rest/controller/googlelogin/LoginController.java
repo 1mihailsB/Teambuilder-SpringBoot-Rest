@@ -1,21 +1,18 @@
 package com.teamplanner.rest.controller.googlelogin;
 
+import com.teamplanner.rest.security.jwtutils.JwtProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.teamplanner.rest.security.jwtutils.JwtProperties;
-
-import java.lang.invoke.MethodHandles;
-import java.util.Map;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.invoke.MethodHandles;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
