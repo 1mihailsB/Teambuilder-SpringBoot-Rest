@@ -45,7 +45,6 @@ public class GoogleAuthorizationCodeExchange {
 
         try {
             googleResponse = restTemplate.exchange("https://oauth2.googleapis.com/token", HttpMethod.POST, entity, Map.class);
-
         } catch (HttpClientErrorException e) {
             LOG.error("an error occured while exchanging auth code", e);
         }

@@ -45,14 +45,14 @@ public class GoogleAuthResponseParser {
         googleResponse = exchange.exchangeAuthCode(authorizationCode);
 
         if (googleResponse.getStatusCode() == HttpStatus.OK) {
-            return parseGoogleReseponse(googleResponse, httpResponse);
+            return authorizationResponse(googleResponse, httpResponse);
         }
         throw new RuntimeException("an error occured while exchanging authorization code");
     }
 
     
     @SuppressWarnings("rawtypes")
-	private ResponseEntity<Map> parseGoogleReseponse(ResponseEntity<Map> googleResponse, HttpServletResponse httpResponse) {
+	private ResponseEntity<Map> authorizationResponse(ResponseEntity<Map> googleResponse, HttpServletResponse httpResponse) {
     	
     	JSONObject json = new JSONObject(googleResponse);
 
