@@ -34,7 +34,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         Cookie cookie = WebUtils.getCookie(request, JwtProperties.COOKIE_NAME);
-        if(cookie != null) System.out.println("Cookie in filter: "+cookie.getName()+":"+cookie.getValue()+"SW: "+cookie.getValue().startsWith(JwtProperties.TOKEN_PREFIX));
 
         if(cookie == null || !cookie.getValue().startsWith(JwtProperties.TOKEN_PREFIX)){
             chain.doFilter(request, response);
