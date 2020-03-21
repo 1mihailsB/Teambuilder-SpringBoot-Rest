@@ -16,15 +16,24 @@ public class UserPrincipalDetailsService implements UserDetailsService {
     }
 
     /**
-     * @param googlesub - contained in JWT token, stored in client's HttpOnly cookie
-     *                  we use Google Id as username in our application.
-     * @return
+     * @param googlesub  contained in JWT token, stored in client's HttpOnly cookie
+     *                  we use Google ID as username in this application.
+     * @return UserDetails
      * @throws UsernameNotFoundException
      */
     @Override
     public UserDetails loadUserByUsername(String googlesub) throws UsernameNotFoundException {
         User user = this.userRepository.findByGooglesub(googlesub);
-        UserPrincipal userPrincipal = new UserPrincipal(user);
+        UserPrincipal userPrincipal = null;
+        if(user != null) {
+            userPrincipal = new UserPrincipal(user);
+        }
+
+        if(userPrincipal == null){
+            throw new UsernameNotFoundException("No such user");
+        }else if(userPrincipal.getAuthorities().size()==0){
+            throw new UsernameNotFoundException("User has no authorities");
+        }
 
         return userPrincipal;
     }
