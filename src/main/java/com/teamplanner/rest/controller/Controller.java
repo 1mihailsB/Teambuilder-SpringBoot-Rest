@@ -13,7 +13,6 @@ public class Controller {
     @GetMapping("/about")
     public String about (@CookieValue(value = JwtProperties.COOKIE_NAME, defaultValue="empty") String Authorization) {
 
-
         return Authorization;
     }
 }
