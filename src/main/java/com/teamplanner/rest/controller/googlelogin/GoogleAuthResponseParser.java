@@ -38,19 +38,19 @@ public class GoogleAuthResponseParser {
     @SuppressWarnings("rawtypes")
     protected ResponseEntity<Map> exchange(Map<String, Object> authorizationCode, HttpServletResponse httpResponse) {
         
-		ResponseEntity<Map> googleResponse = null;
+		ResponseEntity<Map> googleResponse;
 
         googleResponse = exchange.exchangeAuthCode(authorizationCode);
 
         if (googleResponse.getStatusCode() == HttpStatus.OK) {
-            return authorizationResponse(googleResponse, httpResponse);
+            return authenticationAndResponse(googleResponse, httpResponse);
         }
         throw new RuntimeException("an error occured while exchanging authorization code");
     }
 
     
     @SuppressWarnings("rawtypes")
-	private ResponseEntity<Map> authorizationResponse(ResponseEntity<Map> googleResponse, HttpServletResponse httpResponse) {
+	private ResponseEntity<Map> authenticationAndResponse(ResponseEntity<Map> googleResponse, HttpServletResponse httpResponse) {
     	
     	JSONObject json = new JSONObject(googleResponse);
 
@@ -92,7 +92,7 @@ public class GoogleAuthResponseParser {
         cookie.setPath("/");
         httpResponse.addCookie(cookie);
 
-        ResponseEntity<Map> response = new ResponseEntity<Map>(responseToFrontend, HttpStatus.OK);
+        ResponseEntity<Map> response = new ResponseEntity<>(responseToFrontend, HttpStatus.OK);
         
         if (LOG.isDebugEnabled()) LOG.debug("response to frontend: {}", new JSONObject(response).toString(4));
         
