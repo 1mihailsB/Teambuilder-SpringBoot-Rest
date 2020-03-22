@@ -16,8 +16,8 @@ public class UserPrincipalDetailsService implements UserDetailsService {
     }
 
     /**
-     * @param googlesub  contained in JWT token, stored in client's HttpOnly cookie
-     *                  we use Google ID as username in this application.
+     * @param googlesub  contained in JWT token, stored in client's HttpOnly cookie.
+     *                  We use Google ID as username in this application.
      * @return UserDetails
      * @throws UsernameNotFoundException
      */
