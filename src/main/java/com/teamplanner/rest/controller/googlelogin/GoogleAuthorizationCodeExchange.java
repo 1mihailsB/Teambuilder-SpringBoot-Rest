@@ -37,6 +37,11 @@ public class GoogleAuthorizationCodeExchange {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
+        /**
+        example of authorization code exchange request is given in Google documentation, we do it after we receive
+        authorization code by front end by redirecting user to Google authentication page, then we send the code here.
+        google example: https://developers.google.com/identity/protocols/oauth2/web-server#exchange-authorization-code
+         **/
         HttpEntity<String> entity = new HttpEntity<>("code=" + authorizationCode.get("authCode")
                 + "&client_id=" + clientId
                 + "&client_secret=" + clientSecret
