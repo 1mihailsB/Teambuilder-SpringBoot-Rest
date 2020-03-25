@@ -55,9 +55,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             if(googleSub != null){
                 User user = userRepository.findByGooglesub(googleSub);
-                UserPrincipal userPrincipal = new UserPrincipal(user);
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(googleSub, null, userPrincipal.getAuthorities());
-                System.out.println(auth.getPrincipal());
+                MyUserDetails userDetails = new MyUserDetails(user);
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(googleSub, null, userDetails.getAuthorities());
 
                 return auth;
             }
