@@ -1,13 +1,12 @@
 package com.teamplanner.rest.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(name="users")
@@ -23,7 +22,7 @@ public class User {
 	private String email;
 	
 	@Column
-	private String nickname = "#$%unset";
+	private String nickname = "*()unset";
 	
 	@Column
 	private int enabled = 1;
