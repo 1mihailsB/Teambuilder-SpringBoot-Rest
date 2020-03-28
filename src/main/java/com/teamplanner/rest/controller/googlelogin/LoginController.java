@@ -74,10 +74,11 @@ public class LoginController {
         if(user != null && user.getNickname() != nickname){
             user.setNickname(nickname);
 
-            //also refresh authorization and nickname cookie after updating user nickname
+
             try{
                 user = userService.save(user);
 
+                //also refresh authorization and nickname cookie after updating user nickname
                 Cookie userNickNameCookie = WebUtils.getCookie(request, "nickname");
                 userNickNameCookie.setValue(nickname);
                 userNickNameCookie.setMaxAge(JwtProperties.EXPIRATION_TIME_MILLISECONDS/1000);
@@ -88,7 +89,6 @@ public class LoginController {
                 userJwtCookie.setSecure(true);
                 userJwtCookie.setPath("/");
                 userJwtCookie.setMaxAge(JwtProperties.EXPIRATION_TIME_MILLISECONDS/1000);
-
                 response.addCookie(userJwtCookie);
             }catch(DataIntegrityViolationException e){
                 if (LOG.isDebugEnabled()) LOG.debug(e.getMessage());
