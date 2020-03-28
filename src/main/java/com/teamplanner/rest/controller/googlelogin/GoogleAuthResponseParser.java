@@ -76,26 +76,36 @@ public class GoogleAuthResponseParser {
 
         User user = userService.findById(userprops.get("sub"));
         if(user == null) {
-        	User newUser = new User(userprops.get("sub"), userprops.get("given_name"), userprops.get("email"));
-        	userService.save(newUser);
+        	user = new User(userprops.get("sub"), userprops.get("given_name"), userprops.get("email"));
+        	userService.save(user);
         }else {
         	if (LOG.isDebugEnabled()) LOG.debug("----- User already exists in our database: {}", user);
         }
 
-        Map<String, String> responseToFrontend = Map.of("given_name", userprops.get("given_name"));
+        Map<String, String> responseToFrontend = Map.of("googlesub", userprops.get("sub")
+                                                        ,"nickname", user.getNickname());
 
         String jwt = jwtgv.createSignedJwt(userprops.get("sub"));
 
-        final Cookie cookie = new Cookie(JwtProperties.COOKIE_NAME, JwtProperties.TOKEN_PREFIX + jwt);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(JwtProperties.EXPIRATION_TIME_MILLISECONDS/1000);
-        cookie.setPath("/");
-        httpResponse.addCookie(cookie);
+        final Cookie jwtCookie = new Cookie(JwtProperties.COOKIE_NAME, JwtProperties.TOKEN_PREFIX + jwt);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setMaxAge(JwtProperties.EXPIRATION_TIME_MILLISECONDS/1000);
+        jwtCookie.setPath("/");
 
-        ResponseEntity<Map> response = new ResponseEntity<>(responseToFrontend, HttpStatus.OK);
+        final Cookie userNicknameCookie = new Cookie("nickname", user.getNickname());
+        userNicknameCookie.setMaxAge(JwtProperties.EXPIRATION_TIME_MILLISECONDS/1000);
+        userNicknameCookie.setPath("/");
+
+        httpResponse.addCookie(jwtCookie);
+        httpResponse.addCookie(userNicknameCookie);
+
+
+
+
+        ResponseEntity<Map> response = new ResponseEntity<>(HttpStatus.OK);
         
         if (LOG.isDebugEnabled()) LOG.debug("response to frontend: {}", new JSONObject(response).toString(4));
-        
+
         return response;
     }
     
