@@ -55,10 +55,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             if(googleSub != null){
                 User user = userService.findById(googleSub);
-                MyUserDetails userDetails = new MyUserDetails(user);
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(googleSub, null, userDetails.getAuthorities());
-
-                return auth;
+                if(user!=null) {
+                    MyUserDetails userDetails = new MyUserDetails(user);
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(googleSub, null, userDetails.getAuthorities());
+                    return auth;
+                }
+                return null;
             }
             return null;
         }
