@@ -42,13 +42,24 @@ public class LoginController {
 
     @PostMapping("/logout")
     public  String logout(HttpServletResponse response){
-        Cookie cookie = new Cookie(JwtProperties.COOKIE_NAME, null);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
+        final Cookie jwtCookie = new Cookie(JwtProperties.COOKIE_NAME, null);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setMaxAge(0);
+        jwtCookie.setPath("/");
 
-        response.addCookie(cookie);
+        final Cookie userNicknameCookie = new Cookie("nickname", null);//user.getNickname());
+        userNicknameCookie.setMaxAge(0);
+        userNicknameCookie.setPath("/");
+
+        response.addCookie(userNicknameCookie);
+        response.addCookie(jwtCookie);
 
         return "LoggedOut";
+    }
+
+    @PostMapping("/chooseNickname")
+    public ResponseEntity<Map> chooseNickname(HttpServletResponse response){
+
+        return null;
     }
 }
