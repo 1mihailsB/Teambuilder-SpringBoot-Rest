@@ -99,9 +99,6 @@ public class GoogleAuthResponseParser {
         httpResponse.addCookie(jwtCookie);
         httpResponse.addCookie(userNicknameCookie);
 
-
-
-
         ResponseEntity<Map> response = new ResponseEntity<>(HttpStatus.OK);
         
         if (LOG.isDebugEnabled()) LOG.debug("response to frontend: {}", new JSONObject(response).toString(4));
