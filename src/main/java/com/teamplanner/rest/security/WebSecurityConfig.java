@@ -1,8 +1,8 @@
 package com.teamplanner.rest.security;
 
 
-import com.teamplanner.rest.dao.UserRepository;
 import com.teamplanner.rest.security.jwtutils.JwtGeneratorVerifier;
+import com.teamplanner.rest.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,13 +21,13 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserPrincipalDetailsService userPrincipalDetailsService;
-    private UserRepository userRepository;
+    private UserService userService;
     private JwtGeneratorVerifier jwtGeneratorVerifier;
 
-    public WebSecurityConfig(UserPrincipalDetailsService userPrincipalDetailsService, UserRepository userRepository,
+    public WebSecurityConfig(UserPrincipalDetailsService userPrincipalDetailsService, UserService userService,
                              JwtGeneratorVerifier jwtGeneratorVerifier) {
         this.userPrincipalDetailsService = userPrincipalDetailsService;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.jwtGeneratorVerifier = jwtGeneratorVerifier;
     }
 
@@ -36,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.userRepository, this.jwtGeneratorVerifier))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.userService, this.jwtGeneratorVerifier))
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/oauth/**").permitAll()
                 .anyRequest().authenticated();

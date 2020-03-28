@@ -1,10 +1,10 @@
 package com.teamplanner.rest.security;
 
 
-import com.teamplanner.rest.dao.UserRepository;
 import com.teamplanner.rest.model.User;
 import com.teamplanner.rest.security.jwtutils.JwtGeneratorVerifier;
 import com.teamplanner.rest.security.jwtutils.JwtProperties;
+import com.teamplanner.rest.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,12 +22,12 @@ import java.io.IOException;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    UserRepository userRepository;
+    UserService userService;
     JwtGeneratorVerifier jwtgv;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository, JwtGeneratorVerifier jwtgv) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserService userService, JwtGeneratorVerifier jwtgv) {
         super(authenticationManager);
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.jwtgv = jwtgv;
     }
 
@@ -54,7 +54,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             String googleSub = jwtgv.verifySignedJwt(token);
 
             if(googleSub != null){
-                User user = userRepository.findByGooglesub(googleSub);
+                User user = userService.findById(googleSub);
                 MyUserDetails userDetails = new MyUserDetails(user);
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(googleSub, null, userDetails.getAuthorities());
 

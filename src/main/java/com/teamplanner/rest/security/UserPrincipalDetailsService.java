@@ -1,7 +1,7 @@
 package com.teamplanner.rest.security;
 
-import com.teamplanner.rest.dao.UserRepository;
 import com.teamplanner.rest.model.User;
+import com.teamplanner.rest.service.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserPrincipalDetailsService implements UserDetailsService {
-    private UserRepository userRepository;
+    private UserService userService;
 
-    public UserPrincipalDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserPrincipalDetailsService(UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -23,7 +23,7 @@ public class UserPrincipalDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String googlesub) throws UsernameNotFoundException {
-        User user = this.userRepository.findByGooglesub(googlesub);
+        User user = this.userService.findById(googlesub);
         MyUserDetails userDetails = null;
         if(user != null) {
             userDetails = new MyUserDetails(user);

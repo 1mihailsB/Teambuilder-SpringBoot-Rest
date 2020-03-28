@@ -1,8 +1,10 @@
 package com.teamplanner.rest.service;
 
+import com.teamplanner.rest.model.User;
+
 import java.util.List;
 
-import com.teamplanner.rest.model.User;
+
 
 public interface UserService {
 	
