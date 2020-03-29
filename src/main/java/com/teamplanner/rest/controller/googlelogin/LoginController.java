@@ -71,14 +71,14 @@ public class LoginController {
 
         User user = userService.findById((String) authentication.getPrincipal());
 
-        if(user != null && user.getNickname() != nickname){
+        if(user != null && !user.getNickname().equals(nickname)){
             user.setNickname(nickname);
-
-
+            user.setRoles("ROLE_USER"); //give user a default role after he has chosen a nickname
             try{
+                //will throw exception if nickname isn't unique and following code wont run
                 user = userService.save(user);
 
-                //also refresh authorization and nickname cookie after updating user nickname
+                //also refresh authorization and nickname cookies after updating user nickname
                 Cookie userNickNameCookie = WebUtils.getCookie(request, "nickname");
                 userNickNameCookie.setValue(nickname);
                 userNickNameCookie.setMaxAge(JwtProperties.EXPIRATION_TIME_MILLISECONDS/1000);
@@ -95,7 +95,6 @@ public class LoginController {
                 System.out.println("Nickname update exception");
                 return "Username taken";
             }
-
         }
 
         return "Username changed";

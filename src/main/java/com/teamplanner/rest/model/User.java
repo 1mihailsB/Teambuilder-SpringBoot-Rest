@@ -28,7 +28,7 @@ public class User {
 	private int enabled = 1;
 	
 	@Column
-	private String roles = "ROLE_USER";
+	private String roles = "";
 	
 	@Column
 	private String permissions = "";
