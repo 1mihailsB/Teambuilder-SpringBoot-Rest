@@ -22,7 +22,7 @@ public class User {
 	private String email;
 	
 	@Column
-	private String nickname = "*()unset";
+	private String nickname;
 	
 	@Column
 	private int enabled = 1;
