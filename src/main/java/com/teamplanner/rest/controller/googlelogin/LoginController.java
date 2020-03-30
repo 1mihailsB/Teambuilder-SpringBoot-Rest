@@ -71,11 +71,11 @@ public class LoginController {
 
         User user = userService.findById((String) authentication.getPrincipal());
 
-        if(user != null && !user.getNickname().equals(nickname)){
+        if(user != null){
             user.setNickname(nickname);
             user.setRoles("ROLE_USER"); //give user a default role after he has chosen a nickname
             try{
-                //will throw exception if nickname isn't unique and following code wont run
+                //will throw exception if nickname isn't unique and following code won't run
                 user = userService.save(user);
 
                 //also refresh authorization and nickname cookies after updating user nickname
