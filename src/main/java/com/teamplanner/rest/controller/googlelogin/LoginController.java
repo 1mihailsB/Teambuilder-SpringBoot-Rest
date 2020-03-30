@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @CrossOrigin
 @RestController
@@ -68,6 +70,14 @@ public class LoginController {
     @PutMapping("/chooseNickname")
     public String chooseNickname(@RequestBody String nickname, Authentication authentication,
                                               HttpServletRequest request, HttpServletResponse response){
+
+        //if incoming nickname doesn't match it means user is doing something to avoid form validation on front end
+        //we don't create a special response for that, we respond as if such username is taken.
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\[\\]!@_-]{1,16}$");
+        Matcher matcher = pattern.matcher(nickname);
+        if(!matcher.matches()){
+            return "Username taken";
+        }
 
         User user = userService.findById((String) authentication.getPrincipal());
 
