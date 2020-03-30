@@ -92,7 +92,6 @@ public class LoginController {
                 response.addCookie(userJwtCookie);
             }catch(DataIntegrityViolationException e){
                 if (LOG.isDebugEnabled()) LOG.debug(e.getMessage());
-                System.out.println("Nickname update exception");
                 return "Username taken";
             }
         }
