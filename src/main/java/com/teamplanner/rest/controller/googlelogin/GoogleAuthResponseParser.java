@@ -82,9 +82,6 @@ public class GoogleAuthResponseParser {
         	if (LOG.isDebugEnabled()) LOG.debug("----- User already exists in our database: {}", user);
         }
 
-        Map<String, String> responseToFrontend = Map.of("googlesub", userprops.get("sub")
-                                                        ,"nickname", user.getNickname());
-
         String jwt = jwtgv.createSignedJwt(userprops.get("sub"));
 
         final Cookie jwtCookie = new Cookie(JwtProperties.COOKIE_NAME, JwtProperties.TOKEN_PREFIX + jwt);
@@ -92,7 +89,12 @@ public class GoogleAuthResponseParser {
         jwtCookie.setMaxAge(JwtProperties.EXPIRATION_TIME_MILLISECONDS/1000);
         jwtCookie.setPath("/");
 
-        final Cookie userNicknameCookie = new Cookie("nickname", user.getNickname());
+        final Cookie userNicknameCookie;
+        if(user.getNickname()==null){
+            userNicknameCookie = new Cookie("nickname", "*()unset");
+        }else{//if user hasn't yet chosen a nickname, we set it to *()unset in the cookie. front-end expects this.
+            userNicknameCookie = new Cookie("nickname", user.getNickname());
+        }
         userNicknameCookie.setMaxAge(JwtProperties.EXPIRATION_TIME_MILLISECONDS/1000);
         userNicknameCookie.setPath("/");
 
