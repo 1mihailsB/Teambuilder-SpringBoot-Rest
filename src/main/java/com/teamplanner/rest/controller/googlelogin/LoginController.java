@@ -30,21 +30,22 @@ public class LoginController {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 	UserService userService;
-    GoogleAuthResponseParser garp;
+    GoogleLogin googleLogin;
 
     @Autowired
-    public LoginController(GoogleAuthResponseParser garp, UserService userService) {
-        this.garp = garp;
+    public LoginController(GoogleLogin googleLogin, UserService userService) {
+        this.googleLogin = googleLogin;
         this.userService = userService;
     }
 
-    @PostMapping("/authCode")
+    @PostMapping("/login")
     @SuppressWarnings("rawtypes")
     public ResponseEntity<Map> googleAuthentication(@CookieValue (value = JwtProperties.COOKIE_NAME, defaultValue="empty") String AuthorizationJWT,
     @RequestBody Map<String, Object> authorizationCode, HttpServletResponse response) {
-        if (LOG.isDebugEnabled()) LOG.debug("COOKIE--- " +AuthorizationJWT);
+        System.out.println("login");
+        if (LOG.isDebugEnabled()) LOG.debug("COOKIE--- {}", AuthorizationJWT);
     	try {
-            return garp.exchange(authorizationCode, response);
+            return googleLogin.login(authorizationCode, response);
         } catch (HttpClientErrorException e) {
             throw new ResponseStatusException(e.getStatusCode(), e.getStatusText());
         }
@@ -89,8 +90,7 @@ public class LoginController {
                 user = userService.save(user);
 
                 //also refresh authorization and nickname cookies after updating user nickname
-                Cookie userNickNameCookie = WebUtils.getCookie(request, "nickname");
-                userNickNameCookie.setValue(nickname);
+                Cookie userNickNameCookie = new Cookie("nickname", nickname);
                 userNickNameCookie.setMaxAge(JwtProperties.EXPIRATION_TIME_MILLISECONDS/1000);
                 userNickNameCookie.setPath("/");
                 response.addCookie(userNickNameCookie);
