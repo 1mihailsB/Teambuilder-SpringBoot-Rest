@@ -45,14 +45,14 @@ public class GoogleLogin {
 
         if (googleResponse.getStatusCode() == HttpStatus.OK) {
             Map<String,String> googleUserInfo = extractGoogleUserInfo(googleResponse);
-            return authenticateAndPrepeareResponse(googleUserInfo, httpResponse);
+            return authenticateAndPrepareResponse(googleUserInfo, httpResponse);
         }
         throw new RuntimeException("an error occured while exchanging authorization code");
     }
 
     
     @SuppressWarnings("rawtypes")
-	private ResponseEntity<Map> authenticateAndPrepeareResponse(Map<String,String> googleUserInfo, HttpServletResponse httpResponse) {
+	private ResponseEntity<Map> authenticateAndPrepareResponse(Map<String,String> googleUserInfo, HttpServletResponse httpResponse) {
 
         User user = userService.findById(googleUserInfo.get("sub"));
         if(user == null) {
