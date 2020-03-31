@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class GoogleAuthResponseParser {
+public class GoogleLogin {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   
     GoogleAuthorizationCodeExchange exchange;
@@ -30,13 +30,13 @@ public class GoogleAuthResponseParser {
     JwtGeneratorVerifier jwtgv;
 
     @Autowired
-    public GoogleAuthResponseParser(GoogleAuthorizationCodeExchange gace, UserService userService, JwtGeneratorVerifier jwtgv) {
+    public GoogleLogin(GoogleAuthorizationCodeExchange gace, UserService userService, JwtGeneratorVerifier jwtgv) {
     	this.exchange = gace;
     	this.userService = userService;
     	this.jwtgv = jwtgv;
 	}
     @SuppressWarnings("rawtypes")
-    protected ResponseEntity<Map> exchange(Map<String, Object> authorizationCode, HttpServletResponse httpResponse) {
+    protected ResponseEntity<Map> login(Map<String, Object> authorizationCode, HttpServletResponse httpResponse) {
         
 		ResponseEntity<Map> googleResponse;
 
