@@ -47,7 +47,7 @@ public class GoogleLogin {
             Map<String,String> googleUserInfo = extractGoogleUserInfo(googleResponse);
             return authenticateAndPrepareResponse(googleUserInfo, httpResponse);
         }
-        throw new RuntimeException("an error occured while exchanging authorization code");
+        throw new RuntimeException("an error occurred while exchanging authorization code");
     }
 
     
