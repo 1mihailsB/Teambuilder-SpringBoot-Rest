@@ -81,9 +81,10 @@ public class LoginController {
 
         User user = userService.findById((String) authentication.getPrincipal());
 
-        if(user.getNickname().equals(nickname)){return "Can't choose same nickname";}
+        if (nickname.equals(user.getNickname())) return "Can't choose same nickname";
 
         if(user != null){
+
             user.setNickname(nickname);
             //give user a default role after he has chosen a nickname for the first time
             if(user.getRoleList().size()==0) user.setRoles("ROLE_USER");
@@ -109,6 +110,6 @@ public class LoginController {
                 return "Nickname taken";
             }
         }
-        return "Nickname taken";
+        return "Error, username doesn't exist";
     }
 }
