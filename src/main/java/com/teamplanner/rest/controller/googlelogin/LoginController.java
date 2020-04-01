@@ -73,18 +73,21 @@ public class LoginController {
                                               HttpServletRequest request, HttpServletResponse response){
 
         //if incoming nickname doesn't match it means user is doing something to avoid form validation on front end
-        //we don't create a special response for that, we respond as if such username is taken.
         Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\[\\]!@_-]{1,16}$");
         Matcher matcher = pattern.matcher(nickname);
         if(!matcher.matches()){
-            return "Username taken";
+            return "Incorrect nickname";
         }
 
         User user = userService.findById((String) authentication.getPrincipal());
 
+        if(user.getNickname().equals(nickname)){return "Can't choose same nickname";}
+
         if(user != null){
             user.setNickname(nickname);
-            user.setRoles("ROLE_USER"); //give user a default role after he has chosen a nickname
+            //give user a default role after he has chosen a nickname for the first time
+            if(user.getRoleList().size()==0) user.setRoles("ROLE_USER");
+
             try{
                 //will throw exception if nickname isn't unique and following code won't run
                 user = userService.save(user);
@@ -100,12 +103,12 @@ public class LoginController {
                 userJwtCookie.setPath("/");
                 userJwtCookie.setMaxAge(JwtProperties.EXPIRATION_TIME_MILLISECONDS/1000);
                 response.addCookie(userJwtCookie);
+                return "Nickname changed";
             }catch(DataIntegrityViolationException e){
                 if (LOG.isDebugEnabled()) LOG.debug(e.getMessage());
-                return "Username taken";
+                return "Nickname taken";
             }
         }
-
-        return "Username changed";
+        return "Nickname taken";
     }
 }
