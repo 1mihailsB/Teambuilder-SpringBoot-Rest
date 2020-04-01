@@ -110,6 +110,6 @@ public class LoginController {
                 return "Nickname taken";
             }
         }
-        return "Error, username doesn't exist";
+        return "Error, user doesn't exist";
     }
 }
