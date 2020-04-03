@@ -72,7 +72,8 @@ public class LoginController {
     public String chooseNickname(@RequestBody String nickname, Authentication authentication,
                                               HttpServletRequest request, HttpServletResponse response){
 
-        //if incoming nickname doesn't match it means user is doing something to avoid form validation on front end
+        //if incoming nickname doesn't match, it means front end validation didnt work or
+        // user is doing something to avoid it
         Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\[\\]!@_-]{1,16}$");
         Matcher matcher = pattern.matcher(nickname);
         if(!matcher.matches()){
@@ -87,7 +88,7 @@ public class LoginController {
 
             user.setNickname(nickname);
             //give user a default role after he has chosen a nickname for the first time
-            if(user.getRoleList().size()==0) user.setRoles("ROLE_USER");
+            if("ROLE_UNCONFIGURED".equals(user.getRole())) user.setRole("ROLE_USER");
 
             try{
                 //will throw exception if nickname isn't unique and following code won't run

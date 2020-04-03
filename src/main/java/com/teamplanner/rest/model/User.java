@@ -4,9 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Entity
 @Table(name="users")
@@ -28,10 +25,8 @@ public class User {
 	private int enabled = 1;
 	
 	@Column
-	private String roles = "";
-	
-	@Column
-	private String permissions = "";
+	private String role = "ROLE_UNCONFIGURED";
+
 	
 	public User() {
 	}
@@ -88,27 +83,11 @@ public class User {
 		this.enabled = enabled;
 	}
 
-	public List<String> getRoleList() {
-		if(this.roles.length() > 0) {
-			return Arrays.asList(this.roles.split(","));
-		}
-		return new ArrayList<String>();
+	public String getRole() {
+		return this.role;
 	}
 
-	public void setRoles(String roles) {
-		this.roles = roles;
+	public void setRole(String role) {
+		this.role = role;
 	}
-
-	public List<String> getPermissionList() {
-		if(this.permissions.length() > 0) {
-			return Arrays.asList(this.permissions.split(","));
-		}
-		return new ArrayList<String>();
-	}
-
-	public void setPermissions(String permissions) {
-		this.permissions = permissions;
-	}
-	
-	
 }

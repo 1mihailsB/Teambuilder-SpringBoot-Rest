@@ -20,15 +20,9 @@ public class MyUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        this.user.getPermissionList().forEach( p -> {
-            GrantedAuthority authority = new SimpleGrantedAuthority(p);
-            authorities.add(authority);
-        });
+        GrantedAuthority authority = new SimpleGrantedAuthority(this.user.getRole());;
 
-        this.user.getRoleList().forEach(p -> {
-            GrantedAuthority authority = new SimpleGrantedAuthority(p);
-            authorities.add(authority);
-        });
+        authorities.add(authority);
 
         return authorities;
     }

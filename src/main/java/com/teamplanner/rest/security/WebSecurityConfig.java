@@ -3,6 +3,7 @@ package com.teamplanner.rest.security;
 
 import com.teamplanner.rest.security.jwtutils.JwtGeneratorVerifier;
 import com.teamplanner.rest.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -24,6 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserService userService;
     private JwtGeneratorVerifier jwtGeneratorVerifier;
 
+    @Autowired
     public WebSecurityConfig(UserPrincipalDetailsService userPrincipalDetailsService, UserService userService,
                              JwtGeneratorVerifier jwtGeneratorVerifier) {
         this.userPrincipalDetailsService = userPrincipalDetailsService;
