@@ -1,6 +1,6 @@
 package com.teamplanner.rest.controller.googlelogin;
 
-import com.teamplanner.rest.model.User;
+import com.teamplanner.rest.model.entity.User;
 import com.teamplanner.rest.security.jwtutils.JwtProperties;
 import com.teamplanner.rest.service.UserService;
 import org.slf4j.Logger;
@@ -41,14 +41,14 @@ public class LoginController {
     @PostMapping("/login")
     @SuppressWarnings("rawtypes")
     public ResponseEntity<Map> googleAuthentication(@CookieValue (value = JwtProperties.COOKIE_NAME, defaultValue="empty") String AuthorizationJWT,
-    @RequestBody Map<String, Object> authorizationCode, HttpServletResponse response) {
-        System.out.println("login");
+                                                    @RequestBody Map<String, Object> authorizationCode, HttpServletResponse response) {
+                                                        
         if (LOG.isDebugEnabled()) LOG.debug("COOKIE--- {}", AuthorizationJWT);
     	try {
             return googleLogin.login(authorizationCode, response);
         } catch (HttpClientErrorException e) {
             throw new ResponseStatusException(e.getStatusCode(), e.getStatusText());
-        }
+    	}
     }
 
     @PostMapping("/logout")
@@ -68,12 +68,12 @@ public class LoginController {
         return "LoggedOut";
     }
 
-    @PutMapping("/chooseNickname")
+    @PutMapping("/choosenickname")
     public String chooseNickname(@RequestBody String nickname, Authentication authentication,
                                               HttpServletRequest request, HttpServletResponse response){
 
-        //if incoming nickname doesn't match, it means front end validation didnt work or
-        // user is doing something to avoid it
+        //if incoming nickname doesn't match, it means front end validation didn't work or
+        //user is doing something to avoid it
         Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\[\\]!@_-]{1,16}$");
         Matcher matcher = pattern.matcher(nickname);
         if(!matcher.matches()){
