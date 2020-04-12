@@ -1,6 +1,6 @@
 package com.teamplanner.rest.security;
 
-import com.teamplanner.rest.model.User;
+import com.teamplanner.rest.model.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,7 +38,7 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getGoogleSub();
+        return user.getGooglesub();
     }
 
     @Override

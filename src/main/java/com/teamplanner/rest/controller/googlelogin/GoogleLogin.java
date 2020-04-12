@@ -1,6 +1,6 @@
 package com.teamplanner.rest.controller.googlelogin;
 
-import com.teamplanner.rest.model.User;
+import com.teamplanner.rest.model.entity.User;
 import com.teamplanner.rest.security.jwtutils.JwtGeneratorVerifier;
 import com.teamplanner.rest.security.jwtutils.JwtProperties;
 import com.teamplanner.rest.service.UserService;
@@ -37,7 +37,7 @@ public class GoogleLogin {
     	this.jwtGeneratorVerifier = jwtGeneratorVerifier;
 	}
     @SuppressWarnings("rawtypes")
-    protected ResponseEntity<Map> login(Map<String, Object> authorizationCode, HttpServletResponse httpResponse) {
+    protected ResponseEntity login(Map<String, Object> authorizationCode, HttpServletResponse httpResponse) {
         
 		ResponseEntity<Map> googleResponse;
 
@@ -52,7 +52,7 @@ public class GoogleLogin {
 
     
     @SuppressWarnings("rawtypes")
-	private ResponseEntity<Map> authenticateAndPrepareResponse(Map<String,String> googleUserInfo, HttpServletResponse httpResponse) {
+	private ResponseEntity authenticateAndPrepareResponse(Map<String,String> googleUserInfo, HttpServletResponse httpResponse) {
 
         User user = userService.findById(googleUserInfo.get("sub"));
         if(user == null) {
@@ -81,7 +81,7 @@ public class GoogleLogin {
         httpResponse.addCookie(jwtCookie);
         httpResponse.addCookie(userNicknameCookie);
 
-        ResponseEntity<Map> response = new ResponseEntity<>(HttpStatus.OK);
+        ResponseEntity response = new ResponseEntity(HttpStatus.OK);
         
         if (LOG.isDebugEnabled()) LOG.debug("response to frontend: {}", new JSONObject(response).toString(4));
 

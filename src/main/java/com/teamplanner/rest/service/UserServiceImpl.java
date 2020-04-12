@@ -1,7 +1,7 @@
 package com.teamplanner.rest.service;
 
 import com.teamplanner.rest.dao.UserRepository;
-import com.teamplanner.rest.model.User;
+import com.teamplanner.rest.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -40,6 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.userService, this.jwtGeneratorVerifier))
                 .authorizeRequests()
+                .antMatchers("/gameplans/**").hasRole("USER")
                 .antMatchers("/oauth/chooseNickname").authenticated()
                 .antMatchers(HttpMethod.POST, "/oauth/**").permitAll()
                 .anyRequest().authenticated();

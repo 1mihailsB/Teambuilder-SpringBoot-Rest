@@ -1,14 +1,14 @@
-package com.teamplanner.rest.model;
+package com.teamplanner.rest.model.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="users")
 public class User {
 
+	/** format of "sub" field of Google ID token is described here:
+	 https://developers.google.com/identity/protocols/oauth2/openid-connect#an-id-tokens-payload **/
 	@Id
 	private String googlesub;
 	
@@ -27,6 +27,8 @@ public class User {
 	@Column
 	private String role = "ROLE_UNCONFIGURED";
 
+	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+	List<GamePlan> gamePlans;
 	
 	public User() {
 	}
@@ -43,7 +45,7 @@ public class User {
 		return "User [googlesub=" + googlesub + ", name=" + name + ", email=" + email + "]";
 	}
 
-	public String getGoogleSub() {
+	public String getGooglesub() {
 		return googlesub;
 	}
 
@@ -89,5 +91,13 @@ public class User {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public List<GamePlan> getGamePlans() {
+		return gamePlans;
+	}
+
+	public void setGamePlans(List<GamePlan> gamePlans) {
+		this.gamePlans = gamePlans;
 	}
 }

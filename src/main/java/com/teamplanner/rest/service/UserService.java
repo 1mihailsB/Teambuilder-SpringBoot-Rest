@@ -1,6 +1,6 @@
 package com.teamplanner.rest.service;
 
-import com.teamplanner.rest.model.User;
+import com.teamplanner.rest.model.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

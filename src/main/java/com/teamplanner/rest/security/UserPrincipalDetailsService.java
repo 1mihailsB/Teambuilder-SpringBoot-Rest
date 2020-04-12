@@ -1,7 +1,8 @@
 package com.teamplanner.rest.security;
 
-import com.teamplanner.rest.model.User;
+import com.teamplanner.rest.model.entity.User;
 import com.teamplanner.rest.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class UserPrincipalDetailsService implements UserDetailsService {
     private UserService userService;
 
+    @Autowired
     public UserPrincipalDetailsService(UserService userService) {
         this.userService = userService;
     }
