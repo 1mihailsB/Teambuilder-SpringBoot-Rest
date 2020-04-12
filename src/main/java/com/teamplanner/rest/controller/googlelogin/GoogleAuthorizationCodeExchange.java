@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.invoke.MethodHandles;
@@ -40,7 +39,7 @@ public class GoogleAuthorizationCodeExchange {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         /**
-        example of authorization code exchange request is given in Google documentation, we do it after we receive
+        example of authorization code exchange request is given in Google documentation. we perform it after we receive
         authorization code by front end by redirecting user to Google authentication page, then we send the code here.
         google example: https://developers.google.com/identity/protocols/oauth2/web-server#exchange-authorization-code
          **/
@@ -50,11 +49,7 @@ public class GoogleAuthorizationCodeExchange {
                 + "&redirect_uri=" + redirectUri
                 + "&grant_type=authorization_code", headers);
 
-        try {
             googleResponse = restTemplate.exchange(tokenEndpoint, HttpMethod.POST, entity, Map.class);
-        } catch (HttpClientErrorException e) {
-            LOG.error("an error occured while exchanging auth code", e);
-        }
 
         return googleResponse;
 
