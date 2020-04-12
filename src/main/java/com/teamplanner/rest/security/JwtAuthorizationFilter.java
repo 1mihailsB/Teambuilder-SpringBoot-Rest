@@ -1,7 +1,7 @@
 package com.teamplanner.rest.security;
 
 
-import com.teamplanner.rest.model.User;
+import com.teamplanner.rest.model.entity.User;
 import com.teamplanner.rest.security.jwtutils.JwtGeneratorVerifier;
 import com.teamplanner.rest.security.jwtutils.JwtProperties;
 import com.teamplanner.rest.service.UserService;
@@ -33,14 +33,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        Cookie cookie = WebUtils.getCookie(request, JwtProperties.COOKIE_NAME);
+        Cookie jwtCookie = WebUtils.getCookie(request, JwtProperties.COOKIE_NAME);
 
-        if(cookie == null || !cookie.getValue().startsWith(JwtProperties.TOKEN_PREFIX)){
+        if(jwtCookie == null || !jwtCookie.getValue().startsWith(JwtProperties.TOKEN_PREFIX)){
             chain.doFilter(request, response);
             return;
         }
 
-        Authentication authentication = getGoogleSubJwtAuthentication(cookie.getValue());
+        Authentication authentication = getGoogleSubJwtAuthentication(jwtCookie.getValue());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
@@ -55,6 +55,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             if(googleSub != null){
                 User user = userService.findById(googleSub);
+
                 if(user!=null) {
                     MyUserDetails userDetails = new MyUserDetails(user);
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(googleSub, null, userDetails.getAuthorities());
