@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.invoke.MethodHandles;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class GoogleLogin {
     	this.jwtGeneratorVerifier = jwtGeneratorVerifier;
 	}
     @SuppressWarnings("rawtypes")
-    protected ResponseEntity login(Map<String, Object> authorizationCode, HttpServletResponse httpResponse) {
+    protected ResponseEntity login(Map<String, String> authorizationCode, HttpServletResponse httpResponse) {
         
 		ResponseEntity<Map> googleResponse;
 
@@ -56,10 +57,10 @@ public class GoogleLogin {
 
         User user = userService.findById(googleUserInfo.get("sub"));
         if(user == null) {
-        	user = new User(googleUserInfo.get("sub"), googleUserInfo.get("given_name"), googleUserInfo.get("email"));
+        	user = new User(googleUserInfo.get("sub"), googleUserInfo.get("given_name"), googleUserInfo.get("email"), ZonedDateTime.now());
         	userService.save(user);
-        }else {
-        	if (LOG.isDebugEnabled()) LOG.debug("----- User already exists in our database: {}", user);
+        }else if (LOG.isDebugEnabled()) {
+        	 LOG.debug("----- User already exists in our database: {}", user);
         }
 
         String jwt = jwtGeneratorVerifier.createSignedJwt(googleUserInfo.get("sub"));
