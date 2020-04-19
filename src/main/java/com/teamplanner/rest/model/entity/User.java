@@ -1,6 +1,10 @@
 package com.teamplanner.rest.model.entity;
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +21,10 @@ public class User {
 	
 	@Column
 	private String email;
-	
+
+	@Column(name="creation_datetime", columnDefinition = "TIMESTAMP")
+	private ZonedDateTime creationDateTime;
+
 	@Column
 	private String nickname;
 	
@@ -29,20 +36,105 @@ public class User {
 
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	List<GamePlan> gamePlans;
-	
+
+	@OneToMany(mappedBy = "invitingUser",fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@Where(clause = "status = 1")
+	List<Friendship> initiatedFriendships;
+
+	@OneToMany(mappedBy = "invitingUser",fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@Where(clause = "status = 0")
+	List<Friendship> outgoingFriendRequests;
+
+	@OneToMany(mappedBy = "invitedUser", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@Where(clause = "status = 1")
+	List<Friendship> invitedToFriendships;
+
+	@OneToMany(mappedBy = "invitedUser", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@Where(clause = "status = 0")
+	List<Friendship> incomingFriendRequests;
+
 	public User() {
 	}
 
-	public User(String googlesub, String name, String email) {
-		
+	public User(String googlesub, String name, String email, ZonedDateTime creationDateTime) {
 		this.googlesub = googlesub;
 		this.name = name;
 		this.email = email;
+		this.creationDateTime = creationDateTime;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "User [googlesub=" + googlesub + ", name=" + name + ", email=" + email + "]";
+	}
+
+	@Override
+	public boolean equals(Object user){
+
+		if(user == this){return true;}
+		if(!(user instanceof User)){return false;}
+
+		return this.googlesub.equals(((User) user).getGooglesub());
+	}
+
+	public List<Friendship> getOutgoingFriendRequests() {
+		return outgoingFriendRequests;
+	}
+
+	public void addOutgoingFriendRequest(Friendship friendship){
+		if(outgoingFriendRequests == null){
+			outgoingFriendRequests = new ArrayList<>();
+		}
+		outgoingFriendRequests.add(friendship);
+	}
+
+	public void setOutgoingFriendRequests(List<Friendship> outgoingFriendRequests) {
+		this.outgoingFriendRequests = outgoingFriendRequests;
+	}
+
+	public List<Friendship> getIncomingFriendRequests() {
+		return incomingFriendRequests;
+	}
+
+	public void addIncomingFriendRequests(Friendship friendship){
+		if(incomingFriendRequests == null){
+			incomingFriendRequests = new ArrayList<>();
+		}
+		incomingFriendRequests.add(friendship);
+	}
+
+	public void setIncomingFriendRequests(List<Friendship> incomingFriendRequests) {
+		this.incomingFriendRequests = incomingFriendRequests;
+	}
+
+	public List<Friendship> getInitiatedFriendships() {
+		return initiatedFriendships;
+	}
+
+	public void addInitiatedFriendship(Friendship friendship){
+		if(initiatedFriendships == null){
+			initiatedFriendships = new ArrayList<>();
+		}
+		initiatedFriendships.add(friendship);
+	}
+
+	public void setInitiatedFriendships(List<Friendship> initiatedFriendships) {
+		this.initiatedFriendships = initiatedFriendships;
+	}
+
+	public List<Friendship> getInvitedToFriendships() {
+		return invitedToFriendships;
+	}
+
+	public void addInvitedToFriendship(Friendship friendship){
+		if(invitedToFriendships == null){
+			invitedToFriendships = new ArrayList<>();
+		}
+		invitedToFriendships.add(friendship);
+	}
+
+	public void setInvitedToFriendships(List<Friendship> invitedToFriendships) {
+		this.invitedToFriendships = invitedToFriendships;
 	}
 
 	public String getGooglesub() {
@@ -67,6 +159,14 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public ZonedDateTime getCreationDateTime() {
+		return creationDateTime;
+	}
+
+	public void setCreationDateTime(ZonedDateTime creationDateTime) {
+		this.creationDateTime = creationDateTime;
 	}
 
 	public String getNickname() {
