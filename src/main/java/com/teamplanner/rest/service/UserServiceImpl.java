@@ -13,8 +13,6 @@ public class UserServiceImpl implements UserService{
 
 	private UserRepository userRepository;
 
-
-
 	@Autowired
 	public UserServiceImpl(UserRepository userRepository) {
 		this.userRepository = userRepository;
@@ -27,8 +25,22 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public User findById(String id) {
-		Optional<User> result = userRepository.findById(id);
+	public User findByNickname(String nickname){
+		Optional<User> result = userRepository.findByNickname(nickname);
+
+		User user;
+
+		if(result.isPresent()){
+			user = result.get();
+		}else{
+			user = null;
+		}
+		return user;
+	}
+
+	@Override
+	public User findById(String googlesub) {
+		Optional<User> result = userRepository.findById(googlesub);
 		
 		User user;
 		
