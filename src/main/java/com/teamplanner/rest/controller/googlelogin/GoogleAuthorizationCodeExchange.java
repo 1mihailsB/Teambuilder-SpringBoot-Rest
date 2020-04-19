@@ -32,7 +32,7 @@ public class GoogleAuthorizationCodeExchange {
     }
 
     @SuppressWarnings("rawtypes")
-	public ResponseEntity<Map> exchangeAuthCode(Map<String, Object> authorizationCode) {
+	public ResponseEntity<Map> exchangeAuthCode(Map<String, String> authorizationCode) {
 
         ResponseEntity<Map> googleResponse = null;
 
@@ -49,7 +49,7 @@ public class GoogleAuthorizationCodeExchange {
                 + "&redirect_uri=" + redirectUri
                 + "&grant_type=authorization_code", headers);
 
-            googleResponse = restTemplate.exchange(tokenEndpoint, HttpMethod.POST, entity, Map.class);
+        googleResponse = restTemplate.exchange(tokenEndpoint, HttpMethod.POST, entity, Map.class);
 
         return googleResponse;
 
