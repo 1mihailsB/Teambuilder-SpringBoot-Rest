@@ -41,12 +41,13 @@ public class LoginController {
     @PostMapping("/login")
     @SuppressWarnings("rawtypes")
     public ResponseEntity<Map> googleAuthentication(@CookieValue (value = JwtProperties.COOKIE_NAME, defaultValue="empty") String AuthorizationJWT,
-                                                    @RequestBody Map<String, Object> authorizationCode, HttpServletResponse response) {
+                                                    @RequestBody Map<String, String> authorizationCode, HttpServletResponse response) {
                                                         
         if (LOG.isDebugEnabled()) LOG.debug("COOKIE--- {}", AuthorizationJWT);
     	try {
             return googleLogin.login(authorizationCode, response);
         } catch (HttpClientErrorException e) {
+            if (LOG.isDebugEnabled()) LOG.debug("LoginController login error--- {}", e.getMessage());
             throw new ResponseStatusException(e.getStatusCode(), e.getStatusText());
     	}
     }
