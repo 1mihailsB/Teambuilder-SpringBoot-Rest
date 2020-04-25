@@ -5,11 +5,15 @@ import com.teamplanner.rest.model.entity.Friendship;
 import com.teamplanner.rest.model.entity.User;
 import com.teamplanner.rest.service.FriendsService;
 import com.teamplanner.rest.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,15 +22,23 @@ import java.util.regex.Pattern;
 @CrossOrigin
 @RequestMapping("friends")
 public class FriendsController {
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     UserService userService;
     FriendsService friendsService;
     EntityDtoConverter entityDtoConverter;
+    SimpMessageSendingOperations sendingOperations;
+    private SimpMessageSendingOperations stomp;
 
     @Autowired
-    public FriendsController(UserService userService, EntityDtoConverter entityDtoConverter, FriendsService friendsService) {
+    public FriendsController(UserService userService, EntityDtoConverter entityDtoConverter,
+                             FriendsService friendsService, SimpMessageSendingOperations sendingOperations,
+                             SimpMessageSendingOperations stomp) {
         this.userService = userService;
         this.entityDtoConverter = entityDtoConverter;
         this.friendsService = friendsService;
+        this.sendingOperations = sendingOperations;
+        this.stomp = stomp;
     }
 
     @GetMapping("/myFriends")
@@ -65,6 +77,9 @@ public class FriendsController {
 
             Friendship friendship = new Friendship(invitingUser, invitedUser, 0);
             invitedUser.addIncomingFriendRequests(friendship);
+
+            stomp.convertAndSendToUser(invitedUser.getGooglesub(), "/queue/friendRequests",
+                    "Friend request");
 
             return "Friend request sent";
         }
@@ -105,4 +120,5 @@ public class FriendsController {
 
         friendsService.deleteById(friendship.getId());
     }
+
 }
