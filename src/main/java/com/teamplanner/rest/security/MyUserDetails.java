@@ -32,8 +32,8 @@ public class MyUserDetails implements UserDetails {
         return null;
     }
 
-    public String getName(){
-        return user.getName();
+    public String getNickame(){
+        return user.getNickname();
     }
 
     @Override
