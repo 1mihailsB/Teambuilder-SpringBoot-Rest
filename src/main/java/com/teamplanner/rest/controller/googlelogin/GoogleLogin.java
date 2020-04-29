@@ -17,10 +17,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.invoke.MethodHandles;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class GoogleLogin {
@@ -101,15 +99,12 @@ public class GoogleLogin {
         String idTokenDecoded = new String(base64UrlSafe.decode(base64EncodedBody));
         if (LOG.isDebugEnabled()) LOG.debug("JWT Body : {}", new JSONObject(idTokenDecoded).toString(4));
 
-        String bodyQuotesRemoved = idTokenDecoded.replaceAll("\"", "");
-        String[] bodyEntries = bodyQuotesRemoved.split(",");
+        Map<String, Object> idToken = new JSONObject(idTokenDecoded).toMap();
 
-        List<String> wantedUserInfo = Arrays.asList("sub","given_name", "email");
-        Map<String, String> googleUserInfo =
-                Arrays.stream(bodyEntries)
-                        .map(elem -> elem.split(":"))
-                        .filter(elem -> wantedUserInfo.contains(elem[0]))
-                        .collect(Collectors.toMap(e -> e[0], e -> e[1]));
+        Map<String,String> googleUserInfo = new HashMap<>();
+        googleUserInfo.put("sub", idToken.get("sub").toString());
+        googleUserInfo.put("given_name", idToken.get("given_name").toString());
+        googleUserInfo.put("email", idToken.get("email").toString());
 
         return googleUserInfo;
     }
