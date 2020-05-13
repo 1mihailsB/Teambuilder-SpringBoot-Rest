@@ -3,6 +3,7 @@ package com.teamplanner.rest.model;
 import com.teamplanner.rest.model.dto.GamePlanDto;
 import com.teamplanner.rest.model.entity.Friendship;
 import com.teamplanner.rest.model.entity.GamePlan;
+import com.teamplanner.rest.model.entity.GameplanMember;
 import com.teamplanner.rest.model.entity.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -27,10 +28,19 @@ public class EntityDtoConverter {
         return gamePlansDto;
     }
 
-    public GamePlanDto gameplanToDto (GamePlan gamePlan, User user){
+    public GamePlanDto gameplanToDto (GamePlan gamePlan, User user, List<GameplanMember> members){
         GamePlanDto gamePlanDto = new GamePlanDto();
         BeanUtils.copyProperties(gamePlan, gamePlanDto, "author");
         gamePlanDto.setAuthorNickname(user.getNickname());
+
+        List<String> memberNicknames = new ArrayList<>();
+        if(!members.isEmpty()){
+            for(GameplanMember gpm : members){
+                memberNicknames.add(gpm.getMember().getNickname());
+            }
+        }
+
+        gamePlanDto.setMembers(memberNicknames);
 
         return gamePlanDto;
     }
@@ -64,4 +74,33 @@ public class EntityDtoConverter {
 
         return invitingUsersNicknames;
     }
+
+    public List<String> userNicknames (List<User> users) {
+        List<String> userNicknames = new ArrayList<>();
+
+        if (!users.isEmpty()) {
+            for (User user : users) {
+                userNicknames.add(user.getNickname());
+            }
+        }
+
+        return userNicknames;
+    }
+
+    public List<String[]> gameplanMembersToAuthorAndTitleMap(List<GameplanMember> pendingInvites){
+        List<String[]> authorsAndGametitles = new ArrayList<>();
+
+        if(!pendingInvites.isEmpty()){
+            for(GameplanMember gpm : pendingInvites){
+                String[] authorAndGametitle = new String[3];
+                authorAndGametitle[0] = gpm.getGamePlan().getAuthor().getNickname();
+                authorAndGametitle[1] = gpm.getGamePlan().getTitle();
+                authorAndGametitle[2] = Integer.toString(gpm.getId());
+                authorsAndGametitles.add(authorAndGametitle);
+            }
+        }
+
+        return authorsAndGametitles;
+    }
+
 }
