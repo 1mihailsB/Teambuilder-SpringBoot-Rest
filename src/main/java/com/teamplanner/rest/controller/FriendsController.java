@@ -27,17 +27,14 @@ public class FriendsController {
     UserService userService;
     FriendsService friendsService;
     EntityDtoConverter entityDtoConverter;
-    SimpMessageSendingOperations sendingOperations;
-    private SimpMessageSendingOperations stomp;
+    SimpMessageSendingOperations stomp;
 
     @Autowired
     public FriendsController(UserService userService, EntityDtoConverter entityDtoConverter,
-                             FriendsService friendsService, SimpMessageSendingOperations sendingOperations,
-                             SimpMessageSendingOperations stomp) {
+                             FriendsService friendsService, SimpMessageSendingOperations stomp) {
         this.userService = userService;
         this.entityDtoConverter = entityDtoConverter;
         this.friendsService = friendsService;
-        this.sendingOperations = sendingOperations;
         this.stomp = stomp;
     }
 
@@ -78,7 +75,7 @@ public class FriendsController {
             Friendship friendship = new Friendship(invitingUser, invitedUser, 0);
             invitedUser.addIncomingFriendRequests(friendship);
 
-            stomp.convertAndSendToUser(invitedUser.getGooglesub(), "/queue/friendRequests",
+            stomp.convertAndSendToUser(invitedUser.getGooglesub(), "/queue/requests",
                     "Friend request");
 
             return "Friend request sent";
@@ -104,7 +101,7 @@ public class FriendsController {
 
         Friendship incomingRequest = friendsService.checkForFriendshipOrPendingRquests(invitingUser, user);
 
-        incomingRequest.setStatus(1);
+        if(incomingRequest!=null) incomingRequest.setStatus(1);
     }
 
     @DeleteMapping("/removeFriend")
@@ -112,13 +109,29 @@ public class FriendsController {
         User user = userService.findById((String) authentication.getPrincipal());
         User friend = userService.findByNickname(nickname);
 
-        System.out.println("removing friend");
 
         User invitingUser = userService.findByNickname(nickname);
 
         Friendship friendship = friendsService.checkForFriendshipOrPendingRquests(user, friend);
 
         friendsService.deleteById(friendship.getId());
+    }
+
+    @GetMapping("/invitableToGame/{gameId}")
+    public List<String> getFriendInvitableToGame(@PathVariable int gameId, Authentication authentication){
+        User user = userService.findById((String) authentication.getPrincipal());
+        List<Friendship> initiatedFriendships = user.getInitiatedFriendships();
+        List<Friendship> invitedToFriendships = user.getInvitedToFriendships();
+
+        List<String> friendNicknames = entityDtoConverter.userFriendNicknames(initiatedFriendships, invitedToFriendships);
+
+
+        List<User> invitableFriends = userService.findFriendsInvitableToGame(friendNicknames, gameId);
+
+
+        List<String> invitableFriendsNicknames = entityDtoConverter.userNicknames(invitableFriends);
+
+        return invitableFriendsNicknames;
     }
 
 }
