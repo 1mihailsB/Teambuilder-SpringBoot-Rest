@@ -11,7 +11,7 @@ public class WebsocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages
                 .nullDestMatcher().hasRole("USER")
-                .simpSubscribeDestMatchers("/user/queue/friendRequests").hasRole("USER")
+                .simpSubscribeDestMatchers("/user/queue/requests").hasRole("USER")
                 .simpDestMatchers("/sockets/**").hasRole("USER");
     }
 
