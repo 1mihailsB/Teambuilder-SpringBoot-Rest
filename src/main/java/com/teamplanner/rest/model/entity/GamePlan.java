@@ -1,7 +1,11 @@
 package com.teamplanner.rest.model.entity;
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="gameplans")
@@ -24,6 +28,11 @@ public class GamePlan {
     @JoinColumn(name = "author_googlesub")
     User author;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @JoinTable(name="gameplan_members", joinColumns = @JoinColumn(name="gameplan_id"), inverseJoinColumns = @JoinColumn(name="member_user_googlesub"))
+    @Where(clause = "status = 1")
+    List<GameplanMember> gameMembers;
+
     public GamePlan() {
     }
 
@@ -42,6 +51,21 @@ public class GamePlan {
                 ", creationDateTime=" + creationDateTime +
                 ", author=" + author +
                 '}';
+    }
+
+    public List<GameplanMember> getGameMembers() {
+        return gameMembers;
+    }
+
+    public void addGameMember(GameplanMember gameplanMember){
+        if(gameMembers != null){
+            gameMembers = new ArrayList<>();
+        }
+        gameMembers.add(gameplanMember);
+    }
+
+    public void setGameMembers(List<GameplanMember> gameMembers) {
+        this.gameMembers = gameMembers;
     }
 
     public User getAuthor() {
