@@ -37,21 +37,31 @@ public class User {
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	List<GamePlan> gamePlans;
 
-	@OneToMany(mappedBy = "invitingUser",fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToMany(mappedBy = "invitingUser",fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
 	@Where(clause = "status = 1")
 	List<Friendship> initiatedFriendships;
 
-	@OneToMany(mappedBy = "invitingUser",fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToMany(mappedBy = "invitingUser",fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
 	@Where(clause = "status = 0")
 	List<Friendship> outgoingFriendRequests;
 
-	@OneToMany(mappedBy = "invitedUser", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToMany(mappedBy = "invitedUser", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
 	@Where(clause = "status = 1")
 	List<Friendship> invitedToFriendships;
 
-	@OneToMany(mappedBy = "invitedUser", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToMany(mappedBy = "invitedUser", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
 	@Where(clause = "status = 0")
 	List<Friendship> incomingFriendRequests;
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name="gameplan_members", joinColumns = @JoinColumn(name="member_user_googlesub"), inverseJoinColumns = @JoinColumn(name="gameplan_id"))
+	@Where(clause = "status = 0")
+	List<GameplanMember> gameInvitations;
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name="gameplan_members", joinColumns = @JoinColumn(name="member_user_googlesub"), inverseJoinColumns = @JoinColumn(name="gameplan_id"))
+	@Where(clause = "status = 1")
+	List<GameplanMember> acceptedGameInvitations;
 
 	public User() {
 	}
@@ -65,7 +75,12 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [googlesub=" + googlesub + ", name=" + name + ", email=" + email + "]";
+		return "User{" +
+				"googlesub='" + googlesub + '\'' +
+				", name='" + name + '\'' +
+				", email='" + email + '\'' +
+				", nickname='" + nickname + '\'' +
+				'}';
 	}
 
 	@Override
@@ -77,20 +92,20 @@ public class User {
 		return this.googlesub.equals(((User) user).getGooglesub());
 	}
 
+	public List<GameplanMember> getAcceptedGameInvitations() {
+		return acceptedGameInvitations;
+	}
+
+
+
+	public List<GameplanMember> getGameInvitations() {
+		return gameInvitations;
+	}
+
 	public List<Friendship> getOutgoingFriendRequests() {
 		return outgoingFriendRequests;
 	}
 
-	public void addOutgoingFriendRequest(Friendship friendship){
-		if(outgoingFriendRequests == null){
-			outgoingFriendRequests = new ArrayList<>();
-		}
-		outgoingFriendRequests.add(friendship);
-	}
-
-	public void setOutgoingFriendRequests(List<Friendship> outgoingFriendRequests) {
-		this.outgoingFriendRequests = outgoingFriendRequests;
-	}
 
 	public List<Friendship> getIncomingFriendRequests() {
 		return incomingFriendRequests;
