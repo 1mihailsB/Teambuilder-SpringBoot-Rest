@@ -1,4 +1,5 @@
 use website_rest;
+ALTER DATABASE `website_rest` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -17,7 +18,8 @@ CREATE TABLE users (
   `nickname` varchar (16) UNIQUE,
   PRIMARY KEY (`googlesub`),
   KEY (`nickname`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_bin;
+
 
 CREATE TABLE gameplans (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -29,7 +31,7 @@ CREATE TABLE gameplans (
     CONSTRAINT `FK_gameplans` FOREIGN KEY (`author_googlesub`)
     REFERENCES `users` (`googlesub`),
     CONSTRAINT `UQ_author_title_` UNIQUE(`author_googlesub`, `title`)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_bin;
 
 CREATE TABLE friendships (
 `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -49,7 +51,7 @@ REFERENCES `users` (`googlesub`),
 
 CONSTRAINT `FK_friend_2` FOREIGN KEY (`friend_2_googlesub`)
 REFERENCES `users` (`googlesub`)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_bin;
 
 delimiter $
 create trigger uniquefriendships before insert on friendships
@@ -79,6 +81,6 @@ CONSTRAINT `FK2_game_members` foreign key (`member_user_googlesub`) references `
 UNIQUE KEY `gameplan_member_combination` (`gameplan_id`, `member_user_googlesub`),
 
 CHECK(`status` between 0 and 1)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_bin;
 
 SET FOREIGN_KEY_CHECKS = 1;
