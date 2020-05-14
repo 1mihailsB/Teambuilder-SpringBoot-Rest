@@ -39,6 +39,11 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	public List<User> findFriendsInvitableToGame(List<String> friendNicknames, int gameId) {
+		return userRepository.findFriendsInvitableToGame(friendNicknames, gameId);
+	}
+
+	@Override
 	public User findById(String googlesub) {
 		Optional<User> result = userRepository.findById(googlesub);
 		

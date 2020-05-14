@@ -16,5 +16,6 @@ public interface UserService {
 	public User save(User user);
 
 	public User findByNickname(String nickname);
-	
+
+	public List<User> findFriendsInvitableToGame(List<String> friendNicknames, int gameId);
 }
