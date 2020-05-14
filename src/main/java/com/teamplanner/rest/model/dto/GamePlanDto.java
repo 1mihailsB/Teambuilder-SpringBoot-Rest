@@ -1,6 +1,7 @@
 package com.teamplanner.rest.model.dto;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 public class GamePlanDto {
 
@@ -14,6 +15,8 @@ public class GamePlanDto {
     private String mainText;
 
     private String authorNickname;
+
+    private List<String> members;
 
     private ZonedDateTime creationDateTime;
 
@@ -58,6 +61,14 @@ public class GamePlanDto {
 
     public void setAuthorNickname(String authorNickname) {
         this.authorNickname = authorNickname;
+    }
+
+    public List<String> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<String> members) {
+        this.members = members;
     }
 
     public ZonedDateTime getCreationDateTime() {
