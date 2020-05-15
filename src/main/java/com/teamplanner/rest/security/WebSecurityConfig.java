@@ -4,6 +4,7 @@ package com.teamplanner.rest.security;
 import com.teamplanner.rest.security.jwtutils.JwtGeneratorVerifier;
 import com.teamplanner.rest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -24,6 +25,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserPrincipalDetailsService userPrincipalDetailsService;
     private UserService userService;
     private JwtGeneratorVerifier jwtGeneratorVerifier;
+
+    @Value("${google.redirect.uri}")
+    private String redirectUri;
+
 
     @Autowired
     public WebSecurityConfig(UserPrincipalDetailsService userPrincipalDetailsService, UserService userService,
@@ -63,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList(redirectUri));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
         configuration.setExposedHeaders(Arrays.asList("x-auth-token"));

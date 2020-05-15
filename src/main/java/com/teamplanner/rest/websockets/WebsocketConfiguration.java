@@ -1,5 +1,6 @@
 package com.teamplanner.rest.websockets;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -10,10 +11,13 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebsocketConfiguration implements WebSocketMessageBrokerConfigurer {
 
+    @Value("${google.redirect.uri}")
+    private String redirectUri;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
-        stompEndpointRegistry.addEndpoint("/sockets").setAllowedOrigins("http://localhost:3000");
-        stompEndpointRegistry.addEndpoint("/sockets").setAllowedOrigins("http://localhost:3000").withSockJS();
+        stompEndpointRegistry.addEndpoint("/sockets").setAllowedOrigins(redirectUri);
+        stompEndpointRegistry.addEndpoint("/sockets").setAllowedOrigins(redirectUri).withSockJS();
     }
 
     @Override
