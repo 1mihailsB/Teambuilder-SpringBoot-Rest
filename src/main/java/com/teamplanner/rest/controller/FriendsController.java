@@ -2,8 +2,11 @@ package com.teamplanner.rest.controller;
 
 import com.teamplanner.rest.model.EntityDtoConverter;
 import com.teamplanner.rest.model.entity.Friendship;
+import com.teamplanner.rest.model.entity.GamePlan;
 import com.teamplanner.rest.model.entity.User;
 import com.teamplanner.rest.service.FriendsService;
+import com.teamplanner.rest.service.GamePlanService;
+import com.teamplanner.rest.service.GameplanMemberService;
 import com.teamplanner.rest.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,14 +29,19 @@ public class FriendsController {
 
     UserService userService;
     FriendsService friendsService;
+    GamePlanService gamePlanService;
+    GameplanMemberService gameplanMemberService;
     EntityDtoConverter entityDtoConverter;
     SimpMessageSendingOperations stomp;
 
     @Autowired
     public FriendsController(UserService userService, EntityDtoConverter entityDtoConverter,
+                             GameplanMemberService gameplanMemberService, GamePlanService gamePlanService,
                              FriendsService friendsService, SimpMessageSendingOperations stomp) {
         this.userService = userService;
         this.entityDtoConverter = entityDtoConverter;
+        this.gamePlanService = gamePlanService;
+        this.gameplanMemberService = gameplanMemberService;
         this.friendsService = friendsService;
         this.stomp = stomp;
     }
@@ -57,7 +65,9 @@ public class FriendsController {
         }
 
         User invitingUser = userService.findById((String) authentication.getPrincipal());
+
         User invitedUser = userService.findByNickname(nickname);
+
 
         if(invitingUser.equals(invitedUser)) return "Can't invite yourself";
 
@@ -105,16 +115,25 @@ public class FriendsController {
     }
 
     @DeleteMapping("/removeFriend")
+    @Transactional
     public void removeFriend(@RequestBody String nickname, Authentication authentication){
         User user = userService.findById((String) authentication.getPrincipal());
         User friend = userService.findByNickname(nickname);
 
-
-        User invitingUser = userService.findByNickname(nickname);
-
         Friendship friendship = friendsService.checkForFriendshipOrPendingRquests(user, friend);
-
         friendsService.deleteById(friendship.getId());
+
+        List<GamePlan> usersGameplans = user.getGamePlans();
+        gameplanMemberService.deleteRemovedFriendFromGames(friend,usersGameplans);
+
+        List<GamePlan> friendsGameplans = friend.getGamePlans();
+        gameplanMemberService.deleteRemovedFriendFromGames(user,friendsGameplans);
+
+        stomp.convertAndSendToUser(friend.getGooglesub(), "/queue/requests",
+                "Game invite");
+        stomp.convertAndSendToUser(user.getGooglesub(), "/queue/requests",
+                "Game invite");
+
     }
 
     @GetMapping("/invitableToGame/{gameId}")
