@@ -26,4 +26,6 @@ public interface GameplanMemberService {
     public GameplanMember declineGameInvite(int id);
 
     public void deleteById(int id);
+
+    public void deleteRemovedFriendFromGames(User member, List<GamePlan> gamePlans);
 }

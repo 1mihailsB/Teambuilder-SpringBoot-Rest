@@ -73,5 +73,10 @@ public class GameplanMemberServiceImpl implements GameplanMemberService {
     public void deleteById(int id) {
         gameplanMembersRepository.deleteById(id);
     }
+
+    @Override
+    public void deleteRemovedFriendFromGames(User member, List<GamePlan> gamePlans) {
+        gameplanMembersRepository.deleteByMemberAndGamePlanIn(member,gamePlans);
+    }
 }
 

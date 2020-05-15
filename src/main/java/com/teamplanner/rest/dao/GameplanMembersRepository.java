@@ -18,4 +18,6 @@ public interface GameplanMembersRepository extends JpaRepository<GameplanMember,
     GameplanMember deleteById(int id);
 
     List<GameplanMember> findByGamePlanAndStatusEquals(GamePlan gamePlan, int status);
+
+    List<GameplanMember> deleteByMemberAndGamePlanIn(User member, List<GamePlan> gameplans);
 }
