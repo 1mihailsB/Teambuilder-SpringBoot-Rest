@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -49,8 +50,15 @@ public class GamePlanController {
     public List<GamePlanDto> myGames (Authentication authentication) {
         String googlesub = (String) authentication.getPrincipal();
         User user = userService.findById(googlesub);
-        
-        List<GamePlanDto> gamePlanDtos = entityDtoConverter.gameplansToDto(user.getGamePlans(), user);
+        List<GamePlan> usersOwnGameplans = user.getGamePlans();
+
+        List<GameplanMember> userGuestGameplanMembers = gameplanMemberService.findAcceptedGameInvites(user);
+        List<GamePlan> userGuestGameplans = new ArrayList<>();
+        for(GameplanMember gpm : userGuestGameplanMembers){
+            userGuestGameplans.add(gpm.getGamePlan());
+        }
+
+        List<GamePlanDto> gamePlanDtos = entityDtoConverter.gameplansToDto(usersOwnGameplans, user, userGuestGameplans);
 
         return gamePlanDtos;
     }
@@ -118,10 +126,14 @@ public class GamePlanController {
         String authorGooglesub = gamePlan.getAuthor().getGooglesub();
 
         if(user.getGooglesub().equals(authorGooglesub)){
-
             List<GameplanMember> members = gameplanMemberService.findAllMembersByGameplan(gamePlan);
+            return entityDtoConverter.gameplanToDto(gamePlan, members);
+        }
 
-            return entityDtoConverter.gameplanToDto(gamePlan, user, members);
+        GameplanMember gameplanMember = gameplanMemberService.findExistingGameplanMember(user,gamePlan);
+        if(gameplanMember != null && gameplanMember.getStatus() == 1){
+            List<GameplanMember> members = gameplanMemberService.findAllMembersByGameplan(gamePlan);
+            return entityDtoConverter.gameplanToDto(gamePlan,members);
         }
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
@@ -186,15 +198,15 @@ public class GamePlanController {
         return authorsAndGametitles;
     }
 
-    @DeleteMapping("/declineGameInvite/{gameId}")
-    public void declineGameInvite(@PathVariable int gameId, Authentication authentication){
+    @DeleteMapping("/declineGameInvite/{gameplanMemberId}")
+    public void declineGameInvite(@PathVariable int gameplanMemberId, Authentication authentication){
         User user = userService.findById((String) authentication.getPrincipal());
 
-        GameplanMember gameplanMember = gameplanMemberService.findById(gameId);
+        GameplanMember gameplanMember = gameplanMemberService.findById(gameplanMemberId);
 
         if(gameplanMember!=null){
             if(user.equals(gameplanMember.getMember())){
-                gameplanMemberService.declineGameInvite(gameId);
+                gameplanMemberService.declineGameInvite(gameplanMemberId);
             }
         }
 
@@ -223,7 +235,12 @@ public class GamePlanController {
 
         if(user.equals(gamePlan.getAuthor())){
             GameplanMember gameplanMember = gameplanMemberService.findExistingGameplanMember(member,gamePlan);
-            if(gameplanMember.getStatus()==1){
+            if(gameplanMember != null && gameplanMember.getStatus()==1){
+                gameplanMemberService.deleteById(gameplanMember.getId());
+            }
+        }else if(user.equals(member)){
+            GameplanMember gameplanMember = gameplanMemberService.findExistingGameplanMember(user,gamePlan);
+            if(gameplanMember != null && gameplanMember.getStatus()==1){
                 gameplanMemberService.deleteById(gameplanMember.getId());
             }
         }

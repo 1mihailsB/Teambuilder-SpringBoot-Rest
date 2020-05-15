@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class EntityDtoConverter {
 
-    public List<GamePlanDto> gameplansToDto(List<GamePlan> gamePlans, User user){
+    public List<GamePlanDto> gameplansToDto(List<GamePlan> gamePlans, User user, List<GamePlan> userGuestGameplans){
         List<GamePlanDto> gamePlansDto = new ArrayList<>();
         if(!gamePlans.isEmpty()) {
             for(GamePlan gameplan : gamePlans){
@@ -25,13 +25,23 @@ public class EntityDtoConverter {
                 gamePlansDto.add(gamePlanDto);
             }
         }
+
+        if(!userGuestGameplans.isEmpty()){
+            for(GamePlan gameplan : userGuestGameplans){
+                GamePlanDto gamePlanDto = new GamePlanDto();
+                BeanUtils.copyProperties(gameplan,gamePlanDto, "author");
+                gamePlanDto.setAuthorNickname(gameplan.getAuthor().getNickname());
+
+                gamePlansDto.add(gamePlanDto);
+            }
+        }
         return gamePlansDto;
     }
 
-    public GamePlanDto gameplanToDto (GamePlan gamePlan, User user, List<GameplanMember> members){
+    public GamePlanDto gameplanToDto (GamePlan gamePlan, List<GameplanMember> members){
         GamePlanDto gamePlanDto = new GamePlanDto();
         BeanUtils.copyProperties(gamePlan, gamePlanDto, "author");
-        gamePlanDto.setAuthorNickname(user.getNickname());
+        gamePlanDto.setAuthorNickname(gamePlan.getAuthor().getNickname());
 
         List<String> memberNicknames = new ArrayList<>();
         if(!members.isEmpty()){
