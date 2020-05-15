@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, String>{
 
     User findByGooglesub(String username);
 
-    Optional<User> findByNickname(String nickname);
+    Optional<User> findByNicknameEquals(String nickname);
 
     @Query("SELECT u FROM User u WHERE u.nickname IN (:friendNicknames) AND u.nickname NOT IN (SELECT gm.member.nickname FROM GameplanMember gm WHERE " +
             "gm.member.nickname IN (:friendNicknames) AND gm.gamePlan.id = :gameId)")
