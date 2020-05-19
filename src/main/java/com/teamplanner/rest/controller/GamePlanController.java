@@ -123,7 +123,8 @@ public class GamePlanController {
 
         GamePlan gamePlan = gamePlanService.findById(id);
 
-        String authorGooglesub = gamePlan.getAuthor().getGooglesub();
+        String authorGooglesub = null;
+        if(gamePlan != null) authorGooglesub = gamePlan.getAuthor().getGooglesub();
 
         if(user.getGooglesub().equals(authorGooglesub)){
             List<GameplanMember> members = gameplanMemberService.findAllMembersByGameplan(gamePlan);
